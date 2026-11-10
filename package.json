@@ -1,0 +1,55 @@
+{
+  "name": "game-captcha",
+  "version": "0.1.0",
+  "description": "A compact pixel-art game CAPTCHA with seven playable challenges.",
+  "repository": { "type": "git", "url": "https://github.com/superwyh/game-captcha.git" },
+  "homepage": "https://superwyh.github.io/game-captcha/",
+  "bugs": { "url": "https://github.com/superwyh/game-captcha/issues" },
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css",
+    "./src/index.ts",
+    "./lib/game-captcha.js",
+    "./lib/game-captcha.umd.cjs"
+  ],
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./lib/game-captcha.js",
+  "module": "./lib/game-captcha.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/game-captcha.js"
+    },
+    "./style.css": "./lib/game-captcha.css"
+  },
+  "scripts": {
+    "predev": "npm run build:lib",
+    "dev": "vite --host 127.0.0.1",
+    "predemo": "npm run build:lib",
+    "demo": "vite --host 127.0.0.1 --open",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build:demo": "npm run build:lib && vite build && node scripts/prepare-demo.mjs && node scripts/check-build.mjs",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/prepare-lib.mjs",
+    "build": "npm run typecheck && npm run build:demo",
+    "preview": "vite preview --host 127.0.0.1",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "jsdom": "^26.0.0",
+    "typescript": "~5.8.3",
+    "vite": "^8.3.7",
+    "vitest": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

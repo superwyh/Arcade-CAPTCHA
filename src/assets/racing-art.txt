@@ -1,0 +1,21 @@
+Racing sprite atlas
+Generated with the built-in imagegen tool on 2026-11-11.
+Original game artwork distributed with this project's MIT license.
+The image is bundled locally. No image service is used at runtime.
+
+Final generation prompt:
+Use case: stylized-concept.
+Asset type: production pixel-art sprite atlas for a tiny 268x192 retro arcade highway racing game with an OutRun-like rear chase camera.
+Create ONE transparent PNG with an EXACT uniform 4-column by 2-row grid, all 8 cells equal square size. Canvas 1536x768. No labels, gutters, borders or text. Art is genuine chunky low-resolution 16-bit pixel art, each cell based on a 48x48 logical pixel grid. Large crisp square pixels, flat limited colors, dark navy outline, NO fine details, NO smooth shading, NO gradients, NO scenery behind cars.
+All cars face AWAY from camera, so the visible side is the BACK of the car. The horizon is beyond the car. Camera is slightly above the rear so rear window, roof and rear bumper are visible. Absolutely not front-facing cars. Body centered at (24,27) in each logical cell, width 34 pixels, height 23 pixels. Wheels and back bumper share baseline y39 in every car cell, making a stable animation anchor. Keep body center and size consistent between frames.
+Row 1:
+1: Player car, original bright red 1980s wedge sports coupe, direct REAR view, broad dark rear window, red tail lamps, yellow rear bumper panel, dark wheels and a small low spoiler. No brand logo.
+2: Exactly the SAME red car steering LEFT, a mild left turn seen from behind, never shifting body center or baseline. About same width and height.
+3: Exactly the SAME red car steering RIGHT, mirrored mild turn pose, body center and baseline unchanged.
+4: Exactly the SAME red car, direct rear view, with two tiny cyan exhaust flames under the rear bumper for boost. Baseline of tires unchanged.
+Row 2:
+1: Yellow rival sports coupe, direct rear view.
+2: Cyan rival compact hatchback, direct rear view.
+3: Ivory and purple delivery van, direct rear view, taller than a car but same width and baseline.
+4: Single roadside palm tree, full trunk and angular green fronds, chunky sprite, on transparent background. Same 48x48 logical pixel grid.
+Real alpha transparency around every sprite, no drop shadows baked into the art, no pavement or road under the cars, no grid lines, no text, no numbers. Deliver the sprite atlas itself.

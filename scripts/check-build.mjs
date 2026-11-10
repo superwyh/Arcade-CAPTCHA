@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { getGames } from '../lib/game-captcha.js';
+
+assert.deepEqual(getGames().map(game => game.id), ['tetris', '2048', 'minesweeper', 'breakout', 'fps', 'adventure', 'racing'], 'The packaged library must register all seven games.');
+const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const cssPaths = [...html.matchAll(/href="(\.\/assets\/[^\"]+\.css)"/g)].map(match => match[1]);
+assert(cssPaths.length > 0, 'The static site must reference its built CSS.');
+const styles = (await Promise.all(cssPaths.map(path => readFile(new URL(`../dist/${path}`, import.meta.url), 'utf8')))).join('\n');
+assert(styles.includes('.pg-widget'), 'The production bundle must retain the widget styles.');
+const example = await readFile(new URL('../dist/examples/basic.html', import.meta.url), 'utf8');
+assert(example.includes('../lib/game-captcha.js'), 'The native example must use the packaged library.');
+await readFile(new URL('../dist/lib/game-captcha.js', import.meta.url));
+const libraryCss = await readFile(new URL('../dist/lib/game-captcha.css', import.meta.url), 'utf8');
+assert(libraryCss.includes('./fonts/fusion-pixel-12px.woff2'), 'Library fonts must work below a repository path.');
+await readFile(new URL('../dist/lib/fonts/fusion-pixel-12px.woff2', import.meta.url));
+await readFile(new URL('../dist/lib/licenses/fusion-pixel/OFL.txt', import.meta.url));
+const bundle = await readFile(new URL('../lib/game-captcha.js', import.meta.url), 'utf8');
+assert((bundle.match(/data:image\/png;base64,/g) ?? []).length === 3, 'All generated sprite sheets must be included in the portable library.');
+console.log('Build checks passed: seven packaged games, generated atlases, production widget CSS, native HTML example.');
