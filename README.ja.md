@@ -43,6 +43,31 @@
 
 > 娯楽用のフロントエンドの通過条件であり、ボット検出や認証サービスではありません。クリアイベントにセキュリティ上の保証はありません。実際のアクセス権限はサーバー側で制御してください。
 
+## 🤖 AI 向け組み込みプロンプト
+
+以下をコピーしてコーディングアシスタントに渡してください。
+
+```text
+Arcade CAPTCHA を、このプロジェクトの既存のログイン・送信・入場フローに組み込んでください。現在のフレームワークとページ構造を使い、コードを実装してください。
+
+リポジトリと API ドキュメント：https://github.com/superwyh/Arcade-CAPTCHA#readme
+デモ：https://superwyh.github.io/Arcade-CAPTCHA/?view=login
+
+Git と Node.js 22.12 以降を使い、別の作業ディレクトリで実行してください：
+git clone https://github.com/superwyh/Arcade-CAPTCHA.git arcade-captcha
+cd arcade-captcha
+npm ci
+npm run build:lib
+
+生成した lib/ 全体を導入先の静的ファイルにコピーし、chunks/、games/、fonts/、licenses/ を保持してください。公開パスに合わせて arcade-captcha.css を読み込み、arcade-captcha.js から createCaptcha をインポートします。初期化はブラウザー側でのみ行い、npm 公開には依存しません。
+
+createCaptcha(container, { game: 'random', locale: 'auto', autoStart: true, onStateChange }) をマウントしてください。各ゲームの初期目標、ピクセル枠、自動開始を維持します。
+
+onStateChange({ state }) を使い、state === 'passed' のときだけ既存の処理を続行してください。再挑戦時は再びロックし、送信前にも gate.getSnapshot().state を確認します。既存のサーバー認証・検証を維持し、コンポーネントやルートの破棄時には gate.destroy() を呼び出してください。
+
+実装を完了し、クリア、再挑戦、キーボード・タッチ操作、本番ビルドを確認してください。無関係な UI や文言は追加しないでください。
+```
+
 ## 🏁 ローカルで起動
 
 Node.js **22.12 以降**（Node 22 LTS の最新パッチ版を推奨）と npm が必要です。ローカルのソースがある場合は `npm ci` から始めてください。
@@ -65,7 +90,7 @@ Windows では [`start-demo.cmd`](start-demo.cmd) をダブルクリックして
 - 読み込み・リセット後に即座に開始し、クリア後にページへ進むボタンを有効化。
 - 現在の設定から JavaScript / HTML の組み込みコードと、コピー可能な AI 向け組み込みプロンプトを生成。API 設定は必要に応じて展開できます。
 
-独立したログインデモ：`http://127.0.0.1:4173/examples/login.html`。初期言語は英語です。入力済みのデモアカウントで Sign in を押すと、毎回ランダムなゲームが開きます。同じゲームが連続することはありません。クリア後に模擬ログインが完了し、認証情報の送信・保存は行いません。日本語は `?lang=ja`、ブラウザーに合わせる場合は `?lang=auto` を指定します。
+ログインデモはメインページに組み込まれています。**ログインデモ**を押すか、`http://127.0.0.1:4173/?view=login` を開いてください。言語はページと共通です。入力済みのデモアカウントでログインすると毎回ランダムなゲームが開き、同じゲームは連続しません。クリア後に模擬ログインが完了し、認証情報は送信・保存されません。**デモに戻る**で元のゲームと目標設定に戻れます。
 
 ## 🎮 初期ルール
 

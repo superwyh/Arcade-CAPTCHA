@@ -1,14 +1,17 @@
 // @vitest-environment jsdom
-import html from '../examples/login.html?raw';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import { mountLoginPage } from '../examples/login.js';
+import { mountLoginDemo } from '../demo/login';
 import { createTranslator, resolveLocale, locales } from '../src/i18n';
 
 let destroy, instances, createCaptcha, dialog;
 const node = id => document.getElementById(id);
 const submit = () => node('login-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 function mount() {
-  destroy = mountLoginPage({ createCaptcha, getGames: () => [{ id: '2048' }, { id: 'sokoban' }], resolveLocale, createTranslator });
+  const locale = resolveLocale(new URLSearchParams(location.search).get('lang') || 'en');
+  destroy = mountLoginDemo(node('login-preview'), locale, { createCaptcha, getGames: () => [{ id: '2048' }, { id: 'sokoban' }] });
+  dialog = node('verification-dialog');
+  dialog.showModal = () => { dialog.open = true; };
+  dialog.close = () => { dialog.open = false; dialog.dispatchEvent(new Event('close')); };
 }
 function pass(instance = instances.at(-1)) {
   instance.state = 'passed'; instance.options.onStateChange({ state: 'passed' }); instance.options.onVerify();
@@ -16,10 +19,9 @@ function pass(instance = instances.at(-1)) {
 beforeEach(() => {
   vi.useFakeTimers();
   history.replaceState(null, '', '/examples/login.html?lang=zh-CN');
-  document.body.innerHTML = new DOMParser().parseFromString(html, 'text/html').body.innerHTML;
-  dialog = node('verification-dialog');
-  dialog.showModal = () => { dialog.open = true; };
-  dialog.close = () => { dialog.open = false; dialog.dispatchEvent(new Event('close')); };
+  document.body.innerHTML = '<div id="login-preview" class="login-demo"></div>';
+  document.documentElement.lang = 'fr';
+  document.title = 'Host page';
   instances = [];
   createCaptcha = vi.fn((host, options) => {
     const root = document.createElement('section'); root.className = 'pg-widget'; root.tabIndex = 0; host.append(root);
@@ -29,7 +31,7 @@ beforeEach(() => {
 });
 afterEach(() => { destroy?.(); destroy = undefined; vi.useRealTimers(); vi.restoreAllMocks(); });
 
-describe('standalone login demo', () => {
+describe('embedded login demo', () => {
   it('validates fields before opening a challenge', () => {
     mount(); node('email').value = 'invalid'; submit();
     expect(createCaptcha).not.toHaveBeenCalled(); expect(dialog.open).toBe(false);
@@ -51,7 +53,8 @@ describe('standalone login demo', () => {
     vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['zh-CN']);
     vi.spyOn(Math, 'random').mockReturnValue(random);
     mount(); submit();
-    expect(document.documentElement.lang).toBe('en');
+    expect(document.documentElement.lang).toBe('fr');
+    expect(document.title).toBe('Host page');
     expect(node('login-title').textContent).toBe('Sign in');
     expect(node('another-game')).toBeNull();
     expect(instances[0].options.locale).toBe('en');
@@ -90,7 +93,8 @@ describe('standalone login demo', () => {
   });
   it.each(locales)('localizes the login and dialog controls in %s', locale => {
     history.replaceState(null, '', `/examples/login.html?lang=${locale}`); mount();
-    expect(document.documentElement.lang).toBe(locale);
+    expect(document.documentElement.lang).toBe('fr');
+    submit(); expect(instances[0].options.locale).toBe(locale);
     document.querySelectorAll('[data-copy]').forEach(element => expect(element.textContent).not.toBe(''));
     expect(node('verification-title').textContent).toBe(createTranslator(locale)('widget'));
     node('toggle-password').click(); expect(node('password').type).toBe('text');

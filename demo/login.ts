@@ -1,3 +1,7 @@
+import { createCaptcha as createGameCaptcha, getGames as getRegisteredGames, createTranslator, type Locale } from '../src';
+import template from './login.html?raw';
+import './login.css';
+
 const messages = {
   en: { login: 'Sign in', email: 'Email', password: 'Password', show: 'Show', hide: 'Hide', close: 'Close', success: 'Signed in', logout: 'Sign out' },
   'zh-CN': { login: '登录', email: '邮箱', password: '密码', show: '显示', hide: '隐藏', close: '关闭', success: '登录成功', logout: '退出登录' },
@@ -10,33 +14,31 @@ const messages = {
   pt: { login: 'Entrar', email: 'E-mail', password: 'Senha', show: 'Mostrar', hide: 'Ocultar', close: 'Fechar', success: 'Sessão iniciada', logout: 'Sair' },
 };
 
-// A local UI demo: no credentials are sent, saved, or authenticated.
-export function mountLoginPage({ createCaptcha, getGames, resolveLocale, createTranslator }) {
-  const params = new URLSearchParams(location.search);
-  const locale = resolveLocale(params.get('lang') || 'en');
-  const copy = messages[locale] ?? messages.en;
+export function mountLoginDemo(root: HTMLElement, locale: Locale = 'en', dependencies = { createCaptcha: createGameCaptcha, getGames: getRegisteredGames }) {
+  const { createCaptcha, getGames } = dependencies;
+  const copy = messages[locale];
   const games = getGames(locale);
-  document.documentElement.lang = locale;
-  document.title = `${copy.login} · Arcade CAPTCHA`;
-  document.querySelectorAll('[data-copy]').forEach(node => { node.textContent = copy[node.dataset.copy]; });
-  document.querySelector('#verification-title').textContent = createTranslator(locale)('widget');
+  root.innerHTML = template;
+  const node = <T extends HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
+  root.querySelectorAll<HTMLElement>('[data-copy]').forEach(element => { element.textContent = copy[element.dataset.copy as keyof typeof copy]; });
+  node('#verification-title').textContent = createTranslator(locale)('widget');
 
-  const form = document.querySelector('#login-form');
-  const email = document.querySelector('#email');
-  const password = document.querySelector('#password');
-  const login = document.querySelector('#login-button');
-  const toggle = document.querySelector('#toggle-password');
-  const logout = document.querySelector('#logout-button');
-  const dialog = document.querySelector('#verification-dialog');
-  const close = document.querySelector('#close-dialog');
-  const host = document.querySelector('#login-captcha');
+  const form = node<HTMLFormElement>('#login-form');
+  const email = node<HTMLInputElement>('#email');
+  const password = node<HTMLInputElement>('#password');
+  const login = node<HTMLButtonElement>('#login-button');
+  const toggle = node<HTMLButtonElement>('#toggle-password');
+  const logout = node<HTMLButtonElement>('#logout-button');
+  const dialog = node<HTMLDialogElement>('#verification-dialog');
+  const close = node<HTMLButtonElement>('#close-dialog');
+  const host = node<HTMLElement>('#login-captcha');
   const controller = new AbortController();
   const { signal } = controller;
-  let gate;
-  let completion;
+  let gate: ReturnType<typeof createCaptcha> | undefined;
+  let completion: ReturnType<typeof setTimeout> | undefined;
   let signedIn = false;
   let generation = 0;
-  let lastGame;
+  let lastGame: string | undefined;
   close.setAttribute('aria-label', copy.close);
   login.disabled = false;
 
@@ -57,7 +59,7 @@ export function mountLoginPage({ createCaptcha, getGames, resolveLocale, createT
     const choices = alternatives.length ? alternatives : games;
     return choices[Math.floor(Math.random() * choices.length)].id;
   }
-  function startChallenge(game, account) {
+  function startChallenge(game: string, account: string) {
     disposeGate();
     const session = generation;
     lastGame = game;
@@ -74,14 +76,14 @@ export function mountLoginPage({ createCaptcha, getGames, resolveLocale, createT
             if (session !== generation || !dialog.open || gate?.getSnapshot().state !== 'passed') return;
             signedIn = true;
             password.value = ''; hidePassword();
-            document.querySelector('#account-email').textContent = account;
-            document.querySelector('#login-panel').hidden = true;
-            document.querySelector('#account-panel').hidden = false;
+            node<HTMLElement>('#account-email').textContent = account;
+            node<HTMLElement>('#login-panel').hidden = true;
+            node<HTMLElement>('#account-panel').hidden = false;
             dialog.close();
           }, 500);
         },
       });
-      host.querySelector('.pg-widget')?.focus({ preventScroll: true });
+      host.querySelector<HTMLElement>('.pg-widget')?.focus({ preventScroll: true });
     } catch (error) {
       dialog.close(); disposeGate();
       throw error;
@@ -113,12 +115,12 @@ export function mountLoginPage({ createCaptcha, getGames, resolveLocale, createT
   logout.addEventListener('click', () => {
     signedIn = false;
     form.reset(); hidePassword();
-    document.querySelector('#account-email').textContent = '';
-    document.querySelector('#account-panel').hidden = true;
-    document.querySelector('#login-panel').hidden = false;
+    node<HTMLElement>('#account-email').textContent = '';
+    node<HTMLElement>('#account-panel').hidden = true;
+    node<HTMLElement>('#login-panel').hidden = false;
     email.focus();
   }, { signal });
   window.addEventListener('pagehide', () => { if (dialog.open) dialog.close(); disposeGate(); }, { signal });
 
-  return () => { controller.abort(); if (dialog.open) dialog.close(); disposeGate(); };
+  return () => { controller.abort(); if (dialog.open) dialog.close(); disposeGate(); root.replaceChildren(); };
 }

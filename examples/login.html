@@ -3,45 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f6f6f6" />
-  <title>Sign in · Arcade CAPTCHA</title>
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-  <link rel="stylesheet" href="../lib/arcade-captcha.css" />
-  <link rel="stylesheet" href="./login.css" />
-</head>
-<body>
-  <main class="auth-layout">
-    <section id="login-panel" class="auth-card" aria-labelledby="login-title">
-      <h1 id="login-title" data-copy="login">Sign in</h1>
-      <form id="login-form">
-        <label for="email" data-copy="email">Email</label>
-        <input id="email" type="email" value="demo@example.com" autocomplete="username" spellcheck="false" required />
-        <label for="password" data-copy="password">Password</label>
-        <div class="password-field">
-          <input id="password" type="password" value="arcade-captcha" autocomplete="current-password" required />
-          <button id="toggle-password" type="button" aria-pressed="false" aria-controls="password" data-copy="show">Show</button>
-        </div>
-        <button id="login-button" class="primary-button" type="submit" disabled data-copy="login">Sign in</button>
-      </form>
-    </section>
-    <section id="account-panel" class="auth-card account-card" aria-labelledby="account-title" hidden>
-      <span class="success-mark" aria-hidden="true">✓</span>
-      <h1 id="account-title" data-copy="success">Signed in</h1>
-      <p id="account-email"></p>
-      <button id="logout-button" class="primary-button" type="button" data-copy="logout">Sign out</button>
-    </section>
-  </main>
-  <dialog id="verification-dialog" class="verification-dialog" aria-labelledby="verification-title">
-    <div class="dialog-heading">
-      <h2 id="verification-title">Game verification</h2>
-      <button id="close-dialog" class="close-button" type="button" aria-label="Close">×</button>
-    </div>
-    <div id="login-captcha"></div>
-  </dialog>
-  <script type="module">
-    import { createCaptcha, getGames, resolveLocale, createTranslator } from '../lib/arcade-captcha.js';
-    import { mountLoginPage } from './login.js';
-    mountLoginPage({ createCaptcha, getGames, resolveLocale, createTranslator });
+  <title>Login demo · Arcade CAPTCHA</title>
+  <script>
+    const url = new URL('../', location.href);
+    url.search = location.search;
+    url.searchParams.set('view', 'login');
+    if (!url.searchParams.has('lang')) url.searchParams.set('lang', 'en');
+    location.replace(url);
   </script>
-</body>
+</head>
+<body><a href="../?view=login&amp;lang=en">Login demo</a></body>
 </html>

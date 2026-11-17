@@ -92,17 +92,31 @@ for (const locale of ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'fr', 'de', 'es', 'pt'
       return prompt.right > copy.left && prompt.bottom > copy.top && copy.bottom > prompt.top;
     });
     expect(overlap).toBe(false);
+    await page.locator('#login-demo-toggle').click();
+    await expect(page.locator('html')).toHaveAttribute('lang', locale);
+    await expect(page.locator('#login-title')).not.toBeEmpty();
+    for (const selector of ['#login-preview', '#login-form', '#login-demo-toggle']) await fitsViewport(page, selector);
+    await page.locator('#login-button').click();
+    await expect(page.locator('#login-captcha .pg-widget')).toHaveAttribute('data-state', 'running');
+    await fitsViewport(page, '#verification-dialog');
+    await page.locator('#close-dialog').click();
   });
 }
 
-test('login demo defaults to English and replaces the game after cancellation', async ({ page }) => {
-  await page.goto('/?lang=zh-CN');
-  await page.locator('a[href="./examples/login.html"]').click();
-  await expect(page).toHaveURL(/\/examples\/login\.html$/);
+test('login demo stays on the page, randomizes each opening and restores the playground', async ({ page }) => {
+  await page.goto('/?lang=en&game=2048');
+  await page.locator('#target-input').fill('256');
+  await page.locator('#login-demo-toggle').click();
+  expect(new URL(page.url()).pathname).toBe('/');
+  expect(new URL(page.url()).searchParams.get('view')).toBe('login');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page).toHaveTitle('Arcade CAPTCHA');
+  await expect(page.locator('#captcha .pg-widget')).toHaveAttribute('data-state', 'paused');
+  await expect(page.locator('.configuration')).toBeHidden();
+  await expect(page.locator('#code-sample')).toContainText("game: 'random'");
   const signIn = page.getByRole('button', { name: 'Sign in', exact: true });
   await signIn.click();
-  const root = page.locator('.pg-widget');
+  const root = page.locator('#login-captcha .pg-widget');
   await expect(root).toBeFocused();
   const game = await root.getAttribute('aria-label');
   await page.getByRole('button', { name: 'Close', exact: true }).click();
@@ -112,18 +126,34 @@ test('login demo defaults to English and replaces the game after cancellation', 
   await expect(root).toBeFocused();
   await expect(root).not.toHaveAttribute('aria-label', game!);
   await page.keyboard.press('Escape');
-  await expect(page.locator('dialog')).not.toBeVisible();
+  await expect(page.locator('#verification-dialog')).not.toBeVisible();
   await expect(root).toHaveCount(0);
   await expect(signIn).toBeFocused();
+  await page.locator('#login-demo-toggle').click();
+  await expect(page.locator('#login-preview')).toBeHidden();
+  await expect(page.locator('#captcha .pg-widget')).toBeFocused();
+  await expect(page.locator('#captcha .pg-widget')).toHaveAttribute('data-state', 'running');
+  await expect(page.locator('#target-input')).toHaveValue('256');
+  await expect(page.locator('#code-sample')).toContainText('targetScore: 256');
+  await expect(page.locator('.configuration')).toBeVisible();
+  await expect(page.locator('#verification-dialog')).toHaveCount(0);
+});
+
+test('the previous login URL redirects into the main page and preserves its language', async ({ page }) => {
+  await page.goto('/examples/login.html?lang=ja');
+  await expect(page).toHaveURL(/\/\?lang=ja&view=login$/);
+  await expect(page.locator('#login-preview')).toBeVisible();
+  await expect(page.locator('#login-title')).toHaveText('ログイン');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ja');
 });
 
 test('login modal fits a small viewport and keeps the background form inert', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto('/examples/login.html');
+  await page.goto('/?view=login&lang=en');
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await expect(page.locator('.pg-widget')).toBeFocused();
-  await fitsViewport(page, 'dialog');
-  await fitsViewport(page, '.pg-widget');
+  await expect(page.locator('#login-captcha .pg-widget')).toBeFocused();
+  await fitsViewport(page, '#verification-dialog');
+  await fitsViewport(page, '#login-captcha .pg-widget');
   for (let i = 0; i < 8; i++) {
     await page.keyboard.press('Tab');
     expect(await page.evaluate(() => document.activeElement === document.body || !!document.activeElement?.closest('dialog'))).toBe(true);

@@ -43,6 +43,31 @@ Games: Tetris, 2048, Minesweeper, Breakout, FPS, Adventure, Racing, Snake, Space
 
 > This is a frontend game gate for entertainment, not a bot-detection or authentication service. Completion events provide no security guarantee. Enforce real access permissions on your server.
 
+## 🤖 AI integration prompt
+
+Copy this block into your coding assistant:
+
+```text
+Integrate Arcade CAPTCHA into this project's existing login, submit, or entry flow. Implement the changes using the current framework and page structure.
+
+Repository and API docs: https://github.com/superwyh/Arcade-CAPTCHA#readme
+Demo: https://superwyh.github.io/Arcade-CAPTCHA/?view=login
+
+With Git and Node.js 22.12+, run in a separate working directory:
+git clone https://github.com/superwyh/Arcade-CAPTCHA.git arcade-captcha
+cd arcade-captcha
+npm ci
+npm run build:lib
+
+Copy the complete generated lib/ directory into this project's static assets, preserving chunks/, games/, fonts/, and licenses/. Load arcade-captcha.css and import createCaptcha from arcade-captcha.js using the actual deployment paths. Initialize only in the browser; no npm release is required.
+
+Mount createCaptcha(container, { game: 'random', locale: 'auto', autoStart: true, onStateChange }). Use each game's default goal. Keep the pixel frame and immediate start.
+
+Use onStateChange({ state }) to let the existing protected action continue only when state === 'passed'. Relock on retry and check gate.getSnapshot().state again before submission. Keep existing server authentication and validation. Call gate.destroy() on component or route cleanup.
+
+Complete the implementation and verify passing, retrying, keyboard/touch controls, and the production build. Do not add unrelated UI or copy.
+```
+
 ## 🏁 Run locally
 
 Requires Node.js **22.12+** (the latest Node 22 LTS patch is recommended) and npm. If you already have the local source, start with `npm ci`.
@@ -65,7 +90,7 @@ The playground includes:
 - Immediate play after loading or resetting; completion unlocks the page-entry button.
 - JavaScript / HTML integration code and a copyable AI integration prompt based on the current settings. API options expand on demand.
 
-Standalone login demo: `http://127.0.0.1:4173/examples/login.html`. It defaults to English. Click Sign in with the prefilled demo account to open a randomly selected game; consecutive openings never repeat the same game. Completing it finishes the simulated login. No credentials are sent or saved. Use `?lang=zh-CN` or another language tag to switch languages, or `?lang=auto` to follow the browser.
+Login demo is built into the main page: click **Login demo** or open `http://127.0.0.1:4173/?view=login`. It follows the page language. Sign in with the prefilled demo account to open a random game; consecutive openings never repeat. Passing completes a simulated login without sending or storing credentials. **Back to demo** restores your game and target settings.
 
 ## 🎮 Default rules
 

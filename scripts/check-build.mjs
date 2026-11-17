@@ -12,9 +12,7 @@ assert(styles.includes('.pg-widget'), 'The production bundle must retain the wid
 const example = await readFile(new URL('../dist/examples/basic.html', import.meta.url), 'utf8');
 assert(example.includes('../lib/arcade-captcha.js'), 'The native example must use the packaged library.');
 const loginExample = await readFile(new URL('../dist/examples/login.html', import.meta.url), 'utf8');
-assert(loginExample.includes('../lib/arcade-captcha.js') && loginExample.includes('./login.js') && loginExample.includes('./login.css'), 'The independent login demo must use relative paths.');
-await readFile(new URL('../dist/examples/login.js', import.meta.url));
-await readFile(new URL('../dist/examples/login.css', import.meta.url));
+assert(loginExample.includes("new URL('../', location.href)") && loginExample.includes("url.searchParams.set('view', 'login')"), 'The old login URL must redirect to the main page under the deployment base.');
 await readFile(new URL('../dist/lib/arcade-captcha.js', import.meta.url));
 const libraryCss = await readFile(new URL('../dist/lib/arcade-captcha.css', import.meta.url), 'utf8');
 assert(libraryCss.includes('./fonts/fusion-pixel-12px.woff2'), 'Library fonts must work below a repository path.');

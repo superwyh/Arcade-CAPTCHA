@@ -43,6 +43,31 @@
 
 > 오락용 프런트엔드 통과 조건이며 봇 탐지나 인증 서비스가 아닙니다. 완료 이벤트는 보안을 보장하지 않습니다. 실제 접근 권한은 서버에서 제어해야 합니다.
 
+## 🤖 AI 통합 프롬프트
+
+아래 내용을 복사해 코딩 도우미에게 전달하세요.
+
+```text
+Arcade CAPTCHA를 이 프로젝트의 기존 로그인, 제출 또는 입장 흐름에 통합하세요. 현재 프레임워크와 페이지 구조를 유지하면서 코드를 직접 수정하세요.
+
+저장소와 API 문서: https://github.com/superwyh/Arcade-CAPTCHA#readme
+데모: https://superwyh.github.io/Arcade-CAPTCHA/?view=login
+
+Git과 Node.js 22.12 이상을 사용해 별도의 작업 디렉터리에서 실행하세요:
+git clone https://github.com/superwyh/Arcade-CAPTCHA.git arcade-captcha
+cd arcade-captcha
+npm ci
+npm run build:lib
+
+생성된 lib/ 전체를 이 프로젝트의 정적 파일 디렉터리에 복사하고 chunks/, games/, fonts/, licenses/를 유지하세요. 실제 배포 경로에 맞춰 arcade-captcha.css를 불러오고 arcade-captcha.js에서 createCaptcha를 가져오세요. 브라우저에서만 초기화하며 npm 배포에 의존하지 마세요.
+
+createCaptcha(container, { game: 'random', locale: 'auto', autoStart: true, onStateChange })를 마운트하세요. 각 게임의 기본 목표, 픽셀 테두리, 자동 시작을 유지하세요.
+
+onStateChange({ state })로 state === 'passed'일 때만 기존 작업을 진행하세요. 재시도 시 다시 잠그고 제출 전에 gate.getSnapshot().state를 확인하세요. 기존 서버 인증과 검증은 유지하고 컴포넌트나 경로를 해제할 때 gate.destroy()를 호출하세요.
+
+구현을 완료하고 통과, 재시도, 키보드·터치 조작, 프로덕션 빌드를 검증하세요. 관련 없는 UI나 문구는 추가하지 마세요.
+```
+
 ## 🏁 로컬 실행
 
 Node.js **22.12 이상**(Node 22 LTS의 최신 패치 버전 권장)과 npm이 필요합니다. 로컬 소스가 있다면 `npm ci`부터 실행하세요.
@@ -65,7 +90,7 @@ Windows에서는 [`start-demo.cmd`](start-demo.cmd)를 더블 클릭해도 됩�
 - 로드하거나 초기화하면 즉시 시작하고, 완료하면 페이지 진입 버튼 활성화.
 - 현재 설정에 맞는 JavaScript / HTML 삽입 코드와 복사 가능한 AI용 삽입 프롬프트 생성. API 설정은 필요할 때 펼칠 수 있습니다.
 
-독립 로그인 데모: `http://127.0.0.1:4173/examples/login.html`. 기본 언어는 영어입니다. 미리 입력된 데모 계정으로 Sign in을 누르면 무작위 게임이 열리며, 같은 게임이 연속으로 나오지 않습니다. 게임을 완료하면 모의 로그인이 끝납니다. 계정 정보는 전송하거나 저장하지 않습니다. 한국어는 `?lang=ko`, 브라우저 언어 자동 선택은 `?lang=auto`를 사용하세요.
+로그인 데모는 메인 페이지에 포함되어 있습니다. **로그인 데모**를 누르거나 `http://127.0.0.1:4173/?view=login`을 여세요. 페이지와 같은 언어를 사용합니다. 미리 입력된 데모 계정으로 로그인하면 매번 무작위 게임이 열리며 같은 게임이 연속으로 나오지 않습니다. 통과하면 모의 로그인이 완료되고 계정 정보는 전송하거나 저장하지 않습니다. **테스트로 돌아가기**를 누르면 이전 게임과 목표 설정으로 돌아갑니다.
 
 ## 🎮 기본 규칙
 

@@ -43,6 +43,31 @@
 
 > 这是娱乐用途的前端门槛，不是反机器人或身份验证服务。通关事件不提供安全担保，真正的访问权限须由业务服务端控制。
 
+## 🤖 AI 接入提示词
+
+复制下面整段给编程助手：
+
+```text
+把 Arcade CAPTCHA 接入当前项目的登录、提交或进入流程。沿用现有框架和页面结构，直接完成代码修改。
+
+仓库与 API 文档：https://github.com/superwyh/Arcade-CAPTCHA#readme
+演示：https://superwyh.github.io/Arcade-CAPTCHA/?view=login
+
+使用 Git 和 Node.js 22.12+，在单独的工作目录执行：
+git clone https://github.com/superwyh/Arcade-CAPTCHA.git arcade-captcha
+cd arcade-captcha
+npm ci
+npm run build:lib
+
+将生成的 lib/ 完整复制到当前项目的静态资源目录，保留 chunks/、games/、fonts/ 和 licenses/。按实际部署路径加载 arcade-captcha.css，并从 arcade-captcha.js 导入 createCaptcha；仅在浏览器端初始化，不依赖 npm 发布。
+
+挂载 createCaptcha(container, { game: 'random', locale: 'auto', autoStart: true, onStateChange })。采用每款游戏的默认目标，保留像素框体和直接开始。
+
+通过 onStateChange({ state }) 让现有操作仅在 state === 'passed' 后继续；重试时重新锁定，提交前再次检查 gate.getSnapshot().state。保留现有服务端鉴权和校验，组件或路由卸载时调用 gate.destroy()。
+
+完成接入，并验证通关、重试、键盘/触屏操作及生产构建。不要添加无关界面或文案。
+```
+
 ## 🏁 本地启动
 
 需要 Node.js **22.12+**（建议 Node 22 最新 LTS 补丁版）及 npm。已有本地源码时从 `npm ci` 开始。
@@ -63,7 +88,7 @@ Windows 也可以双击 [`start-demo.cmd`](start-demo.cmd)，它会在缺少依�
 - 游戏加载与重置后直接开始，达标后解锁“进入页面”。
 - 根据当前设置生成 JavaScript / HTML 接入代码和可复制的 AI 接入提示词；API 参数按需展开。
 
-独立登录演示：`http://127.0.0.1:4173/examples/login.html`。默认英文，使用预填的演示账号点击登录，每次打开验证弹窗都会重新随机抽取游戏，相邻两次不重复；通关后完成模拟登录，不发送或保存账号密码。可通过 `?lang=zh-CN` 等语言标签切换语言，`?lang=auto` 自动匹配浏览器语言。
+登录演示已内置在主页面：点击**登录演示**，或打开 `http://127.0.0.1:4173/?view=login`，语言与当前页面一致。使用预填的演示账号登录，每次弹出随机游戏，相邻两次不重复；通关后完成模拟登录，不发送或保存账号密码。点击**返回测试**可恢复之前的游戏和目标设置。
 
 ## 🎮 默认规则
 

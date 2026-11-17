@@ -4,6 +4,7 @@ import javascript from 'highlight.js/lib/languages/javascript';
 import xml from 'highlight.js/lib/languages/xml';
 import './style.css';
 import { integrationPrompt } from './integration-prompt';
+import { mountLoginDemo } from './login';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('xml', xml);
@@ -14,16 +15,19 @@ document.documentElement.lang = locale;
 document.title = 'Arcade CAPTCHA';
 document.querySelector('meta[name="description"]')?.setAttribute('content', `Arcade CAPTCHA · ${t('widget')}`);
 const games = getGames(locale);
-const targets = Object.fromEntries(games.map(game => [game.id, game.defaultTarget]));
+const defaultTargets = Object.fromEntries(games.map(game => [game.id, game.defaultTarget]));
+const targets = { ...defaultTargets };
 const requestedGame = new URLSearchParams(location.search).get('game');
 let selected = games.find(game => game.id === (requestedGame === 'doom' ? 'fps' : requestedGame))?.id ?? 'tetris';
 let random = false;
 let codeTab: 'js' | 'html' | 'prompt' = 'js';
 let verified: VerificationResult | undefined;
+let loginMode = false;
+let disposeLogin: (() => void) | undefined;
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main>
-    <header class="site-header"><h1>Arcade CAPTCHA</h1><nav><a href="./examples/login.html">${t('loginDemo')}</a><a href="#integration">${t('code')}</a></nav></header>
+    <header class="site-header"><h1>Arcade CAPTCHA</h1><nav><button type="button" id="login-demo-toggle" aria-pressed="false" aria-controls="login-preview">${t('loginDemo')}</button><a href="#integration">${t('code')}</a></nav></header>
     <div class="workspace">
       <section class="demo" aria-label="${t('demo')}">
         <div class="preview">
@@ -32,6 +36,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
               <div id="captcha"></div>
               <button type="button" id="enter" disabled>${t('enter')}</button>
             </div>
+            <div id="login-preview" class="login-demo" hidden></div>
           </div>
         </div>
         <div class="configuration">
@@ -75,12 +80,14 @@ const captcha = createCaptcha('#captcha', {
 });
 
 function codeSample() {
+  const useRandom = loginMode || random;
+  const activeTargets = loginMode ? defaultTargets : targets;
   if (codeTab === 'prompt') return integrationPrompt(locale, {
-    ...(random ? { game: 'random', targets: { ...targets } } : { game: selected, targetScore: targets[selected] }),
+    ...(useRandom ? { game: 'random', targets: { ...activeTargets } } : { game: selected, targetScore: targets[selected] }),
     locale: 'auto', autoStart: true,
   });
   if (codeTab === 'html') return `<link rel="stylesheet" href="./lib/arcade-captcha.css">\n\n<div id="captcha"></div>\n<button id="enter" disabled>${t('enter')}</button>\n\n<script type="module" src="./app.js"></script>`;
-  const config = random ? `game: 'random',\n  targets: {\n${Object.entries(targets).map(([id, target]) => `    '${id}': ${target}`).join(',\n')}\n  },` : `game: '${selected}',\n  targetScore: ${targets[selected]},`;
+  const config = useRandom ? `game: 'random',\n  targets: {\n${Object.entries(activeTargets).map(([id, target]) => `    '${id}': ${target}`).join(',\n')}\n  },` : `game: '${selected}',\n  targetScore: ${targets[selected]},`;
   return `import { createCaptcha } from './lib/arcade-captcha.js';\n\nconst enter = document.querySelector('#enter');\n\nconst gate = createCaptcha('#captcha', {\n  ${config}\n  onStateChange({ state }) {\n    enter.disabled = state !== 'passed';\n  },\n  onVerify(result) {\n    console.log(result);\n  }\n});\n\nenter.onclick = () => {\n  if (gate.getSnapshot().state === 'passed')\n    location.href = './welcome.html';\n};\n\n// ${t('cleanup')}`;
 }
 
@@ -163,5 +170,32 @@ document.querySelector('#copy-code')!.addEventListener('click', async event => {
 enter.addEventListener('click', () => { if (verified && captcha.getSnapshot().state === 'passed') welcome.showModal(); });
 document.querySelector('#return')!.addEventListener('click', () => { welcome.close(); captcha.reset(); });
 window.addEventListener('pagehide', () => captcha.pause());
-window.addEventListener('pageshow', () => captcha.resume());
+window.addEventListener('pageshow', () => { if (!loginMode) captcha.resume(); });
+
+function setLoginMode(active: boolean, focus = true) {
+  loginMode = active;
+  const host = document.querySelector<HTMLElement>('#login-preview')!;
+  const toggle = document.querySelector<HTMLButtonElement>('#login-demo-toggle')!;
+  disposeLogin?.(); disposeLogin = undefined;
+  document.querySelector<HTMLElement>('.preview-window')!.hidden = active;
+  document.querySelector<HTMLElement>('.configuration')!.hidden = active;
+  host.hidden = !active;
+  toggle.setAttribute('aria-pressed', String(active));
+  toggle.textContent = t(active ? 'back' : 'loginDemo');
+  if (active) {
+    captcha.pause();
+    disposeLogin = mountLoginDemo(host, locale);
+    if (focus) host.querySelector<HTMLElement>('#login-button')!.focus({ preventScroll: true });
+  } else {
+    captcha.resume();
+    if (focus) document.querySelector<HTMLElement>('#captcha .pg-widget')!.focus({ preventScroll: true });
+  }
+  const url = new URL(location.href);
+  if (active) url.searchParams.set('view', 'login');
+  else url.searchParams.delete('view');
+  history.replaceState(null, '', url);
+  renderCode();
+}
+document.querySelector('#login-demo-toggle')!.addEventListener('click', () => setLoginMode(!loginMode));
+if (new URLSearchParams(location.search).get('view') === 'login') setLoginMode(true, false);
 renderCode();
