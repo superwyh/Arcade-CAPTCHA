@@ -111,7 +111,7 @@ export class AdventureModel {
     this.attackFacing = this.facing; this.struck.clear(); this.moving = false; this.events.push('sword');
   }
   private strike() {
-    // Damage exists only while the generated frame actually extends the blade.
+    // Apply damage only during sword extension.
     if (swordFrame(this.swing) !== 3) return;
     const direction = directions[this.attackFacing];
     for (const enemy of this.room.enemies) {

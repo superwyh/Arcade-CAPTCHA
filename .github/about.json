@@ -1,0 +1,13 @@
+{
+  "description": "Complete a mini-game to pass the CAPTCHA. 12 games, configurable goals, 9 languages, zero runtime dependencies.",
+  "topics": [
+    "captcha",
+    "arcade-captcha",
+    "mini-games",
+    "pixel-art",
+    "typescript",
+    "javascript",
+    "canvas",
+    "browser-game"
+  ]
+}

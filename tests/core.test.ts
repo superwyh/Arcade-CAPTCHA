@@ -129,6 +129,33 @@ describe('unified verification lifecycle', () => {
     old.reportScore(100); expect(verify).not.toHaveBeenCalled(); expect(oldSession.destroy).toHaveBeenCalledTimes(1);
     gate.destroy(); context.reportScore(100); expect(verify).not.toHaveBeenCalled(); expect(document.querySelector('.pg-widget')).toBeNull();
   });
+  it('does not send an old pass to the next round when a state callback resets the gate', () => {
+    const oldVerify = vi.fn(), nextVerify = vi.fn();
+    let replaced = false;
+    const gate = new GameCaptcha('#captcha', {
+      game: 'test-game', onVerify: oldVerify,
+      onStateChange({ state }) {
+        if (state === 'passed' && !replaced) { replaced = true; gate.reset({ onVerify: nextVerify }); }
+      },
+    });
+    const oldContext = context;
+    oldContext.reportScore(10);
+    expect(gate.getSnapshot()).toMatchObject({ state: 'running', score: 0 });
+    expect(oldVerify).not.toHaveBeenCalled(); expect(nextVerify).not.toHaveBeenCalled();
+    oldContext.reportScore(20); expect(nextVerify).not.toHaveBeenCalled();
+    context.reportScore(10); expect(nextVerify).toHaveBeenCalledOnce();
+    gate.destroy();
+  });
+  it('does not verify after a state callback destroys the gate', () => {
+    const verify = vi.fn();
+    const gate = new GameCaptcha('#captcha', {
+      game: 'test-game', onVerify: verify,
+      onStateChange({ state }) { if (state === 'passed') gate.destroy(); },
+    });
+    context.reportScore(10);
+    expect(document.querySelector('.pg-widget')).toBeNull();
+    expect(verify).not.toHaveBeenCalled();
+  });
   it('pauses gameplay and scoring, then resumes the same session', () => {
     const gate = new GameCaptcha('#captcha', { game: 'test-game' }); gate.start(); context.reportScore(4); gate.pause();
     context.reportScore(10); expect(gate.getSnapshot()).toMatchObject({ state: 'paused', score: 4 });
@@ -189,6 +216,19 @@ describe('unified verification lifecycle', () => {
   it('verifies actual Minesweeper gameplay through the same framework', () => {
     const verify = vi.fn(); const gate = new GameCaptcha('#captcha', { game: 'minesweeper', targetScore: 1, onVerify: verify }); gate.start();
     document.querySelector<HTMLButtonElement>('.pg-mine-cell')!.click(); expect(verify).toHaveBeenCalledTimes(1); expect(gate.getSnapshot().state).toBe('passed'); gate.destroy();
+  });
+  it.each(Array.from({ length: 8 }, (_, col) => col))('keeps Minesweeper column %s at the top and bottom edges', col => {
+    const gate = new GameCaptcha('#captcha', { game: 'minesweeper' });
+    const root = document.querySelector('.pg-widget')!;
+    const press = (code: string) => root.dispatchEvent(new KeyboardEvent('keydown', { key: code, code, bubbles: true }));
+    const selected = () => [...document.querySelectorAll<HTMLElement>('.pg-mine-cell')].findIndex(cell => cell.dataset.selected === 'true');
+    for (let i = 0; i < col; i++) press('ArrowRight');
+    press('ArrowUp'); expect(selected()).toBe(col);
+    for (let i = 0; i < 5; i++) press('ArrowDown');
+    expect(selected()).toBe(40 + col);
+    press('ArrowDown'); expect(selected()).toBe(40 + col);
+    press('ArrowUp'); expect(selected()).toBe(32 + col);
+    gate.destroy();
   });
   it('requires every safe cell for the default Minesweeper challenge', () => {
     const random = vi.spyOn(Math, 'random').mockReturnValue(.37);

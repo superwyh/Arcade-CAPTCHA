@@ -1,12 +1,18 @@
 import { createCaptcha, getGames, createTranslator, resolveLocale, type VerificationResult } from '../src';
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import xml from 'highlight.js/lib/languages/xml';
 import './style.css';
 import { integrationPrompt } from './integration-prompt';
+
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('xml', xml);
 
 const locale = resolveLocale(new URLSearchParams(location.search).get('lang') ?? 'auto');
 const t = createTranslator(locale);
 document.documentElement.lang = locale;
-document.title = 'Game CAPTCHA';
-document.querySelector('meta[name="description"]')?.setAttribute('content', `Game CAPTCHA · ${t('widget')}`);
+document.title = 'Arcade CAPTCHA';
+document.querySelector('meta[name="description"]')?.setAttribute('content', `Arcade CAPTCHA · ${t('widget')}`);
 const games = getGames(locale);
 const targets = Object.fromEntries(games.map(game => [game.id, game.defaultTarget]));
 const requestedGame = new URLSearchParams(location.search).get('game');
@@ -17,19 +23,28 @@ let verified: VerificationResult | undefined;
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main>
-    <header><h1>Game CAPTCHA</h1></header>
+    <header class="site-header"><h1>Arcade CAPTCHA</h1><nav><a href="./examples/login.html">${t('loginDemo')}</a><a href="#integration">${t('code')}</a></nav></header>
     <div class="workspace">
       <section class="demo" aria-label="${t('demo')}">
-        <div class="game-options" role="group" aria-label="${t('game')}">${games.map(game => `<button type="button" data-game="${game.id}" aria-label="${game.name}" aria-pressed="${game.id === selected}">${game.id === 'tetris' ? t('tetrisButton') : game.id === 'minesweeper' ? t('minesButton') : game.id === 'breakout' ? t('breakoutButton') : game.name}</button>`).join('')}<button type="button" id="random-toggle" aria-pressed="false">${t('random')}</button></div>
+        <div class="preview">
+          <div class="preview-frame">
+            <div class="preview-window">
+              <div id="captcha"></div>
+              <button type="button" id="enter" disabled>${t('enter')}</button>
+            </div>
+          </div>
+        </div>
+        <div class="configuration">
+        <div class="game-options" role="group" aria-label="${t('game')}">${games.map(game => `<button type="button" data-game="${game.id}" aria-label="${game.name}" aria-pressed="${game.id === selected}">${game.id === 'minesweeper' ? t('minesButton') : game.id === 'breakout' ? t('breakoutButton') : game.name}</button>`).join('')}</div>
         <form id="settings" class="settings">
           <label class="target-field">${t('target')}<input id="target-input" type="number" value="${targets[selected]}" min="1" max="${games.find(game => game.id === selected)!.maxTarget}" aria-describedby="target-error" /></label>
+          <button type="button" id="random-toggle" aria-pressed="false">${t('random')}</button>
           <button type="button" id="restore" title="${t('restore')}" aria-label="${t('restore')}"><svg viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M3 1h5v1h2v2h1V2h1v5H7V6h3V4H8V3H3v1H2v4h1v1h5V8h2v2H8v1H3v-1H1V8H0V4h1V2h2z"/></svg></button>
         </form>
         <p id="target-error" role="alert" hidden></p>
-        <div id="captcha"></div>
-        <button type="button" id="enter" disabled>${t('enter')}</button>
+        </div>
       </section>
-      <section class="integration" aria-label="${t('code')}">
+      <section id="integration" class="integration" aria-label="${t('code')}">
         <div class="code-toolbar"><div role="tablist" aria-label="${t('code')}"><button type="button" role="tab" id="tab-js" aria-selected="true" aria-controls="code-panel" data-tab="js">JavaScript</button><button type="button" role="tab" id="tab-html" aria-selected="false" aria-controls="code-panel" data-tab="html" tabindex="-1">HTML</button><button type="button" role="tab" id="tab-prompt" aria-selected="false" aria-controls="code-panel" data-tab="prompt" tabindex="-1">${t('aiPrompt')}</button></div><button type="button" id="copy-code">${t('copy')}</button></div>
         <pre id="code-panel" role="tabpanel" aria-labelledby="tab-js" tabindex="0"><code id="code-sample"></code></pre>
         <details class="api"><summary>${t('api')}</summary>
@@ -64,24 +79,26 @@ function codeSample() {
     ...(random ? { game: 'random', targets: { ...targets } } : { game: selected, targetScore: targets[selected] }),
     locale: 'auto', autoStart: true,
   });
-  if (codeTab === 'html') return `<link rel="stylesheet" href="./lib/game-captcha.css">\n\n<div id="captcha"></div>\n<button id="enter" disabled>${t('enter')}</button>\n\n<script type="module" src="./app.js"></script>`;
+  if (codeTab === 'html') return `<link rel="stylesheet" href="./lib/arcade-captcha.css">\n\n<div id="captcha"></div>\n<button id="enter" disabled>${t('enter')}</button>\n\n<script type="module" src="./app.js"></script>`;
   const config = random ? `game: 'random',\n  targets: {\n${Object.entries(targets).map(([id, target]) => `    '${id}': ${target}`).join(',\n')}\n  },` : `game: '${selected}',\n  targetScore: ${targets[selected]},`;
-  return `import { createCaptcha } from './lib/game-captcha.js';\n\nconst enter = document.querySelector('#enter');\n\nconst gate = createCaptcha('#captcha', {\n  ${config}\n  onStateChange({ state }) {\n    enter.disabled = state !== 'passed';\n  },\n  onVerify(result) {\n    console.log(result);\n  }\n});\n\nenter.onclick = () => {\n  if (gate.getSnapshot().state === 'passed')\n    location.href = './welcome.html';\n};\n\n// ${t('cleanup')}`;
+  return `import { createCaptcha } from './lib/arcade-captcha.js';\n\nconst enter = document.querySelector('#enter');\n\nconst gate = createCaptcha('#captcha', {\n  ${config}\n  onStateChange({ state }) {\n    enter.disabled = state !== 'passed';\n  },\n  onVerify(result) {\n    console.log(result);\n  }\n});\n\nenter.onclick = () => {\n  if (gate.getSnapshot().state === 'passed')\n    location.href = './welcome.html';\n};\n\n// ${t('cleanup')}`;
 }
 
 function renderCode() {
   const node = document.querySelector('#code-sample')!;
   document.querySelector('#code-panel')!.classList.toggle('is-prompt', codeTab === 'prompt');
   document.querySelector('#copy-code')!.textContent = t('copy');
-  if (codeTab === 'prompt') { node.textContent = codeSample(); return; }
-  node.replaceChildren();
-  codeSample().split(/('(?:[^']*)'|\/\/[^\n]*|\b(?:import|from|const|if)\b)/g).forEach(token => {
-    const span = document.createElement('span'); span.textContent = token;
-    if (token.startsWith("'")) span.className = 'code-string';
-    else if (token.startsWith('//')) span.className = 'code-comment';
-    else if (/^(import|from|const|if)$/.test(token)) span.className = 'code-keyword';
-    node.append(span);
-  });
+  if (codeTab === 'prompt') {
+    node.className = '';
+    node.textContent = codeSample();
+    return;
+  }
+  const language = codeTab === 'js' ? 'javascript' : 'xml';
+  node.className = `hljs language-${language}`;
+  node.innerHTML = hljs.highlight(codeSample(), {
+    language,
+    ignoreIllegals: true,
+  }).value;
 }
 
 function applyTarget() {

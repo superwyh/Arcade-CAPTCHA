@@ -34,7 +34,7 @@ function resolveGame(options: CaptchaOptions) {
 }
 
 /** Entertainment-only client-side gate. VerificationResult is not a security token. */
-export class GameCaptcha {
+export class ArcadeCaptcha {
   private options: CaptchaOptions;
   private definition!: GameDefinition;
   private target = 0;
@@ -77,7 +77,7 @@ export class GameCaptcha {
   private onCompositionStart = (event: CompositionEvent) => { if (!editingText(event.target)) this.releaseKeyboardInputs(); };
   private onKeyUp = (event: KeyboardEvent) => {
     this.releaseInput(`key:${event.code || event.key}`);
-    // Some IMEs omit the released key entirely. Never leave a movement key stuck.
+    // Some IMEs omit the released key; clear all held inputs in that case.
     if (!event.code && (event.key === 'Process' || event.key === 'Unidentified' || event.keyCode === 229)) this.releaseKeyboardInputs();
     const key = physicalKey(event.code) || event.key;
     if ((key === ' ' || key === 'Enter') && event.target instanceof HTMLButtonElement) return;
@@ -155,7 +155,7 @@ export class GameCaptcha {
     const locale = resolveLocale(this.options.locale);
     this.t = createTranslator(locale);
     this.root.lang = locale;
-    this.root.setAttribute('aria-label', `Game CAPTCHA ${this.t('widget')} · ${this.definition.name}`);
+    this.root.setAttribute('aria-label', `Arcade CAPTCHA ${this.t('widget')} · ${this.definition.name}`);
     this.pausedByVisibility = false;
     this.state = 'idle'; this.score = 0; this.duration = 0;
     this.root.setAttribute('aria-description', this.definition.instructions);
@@ -194,7 +194,11 @@ export class GameCaptcha {
         if (control.action === 'flag') button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'));
         this.root.focus({ preventScroll: true });
       });
-      this.controls.append(button);
+      if (control.action === 'undo') {
+        button.className = 'pg-undo pg-icon-button';
+        button.innerHTML = '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><path fill="currentColor" d="M3 1h2v2H3V1zM1 3h2v2H1V3zM0 5h10v1h1v1h1v3h-2V8H9V7H3v2H1V7H0V5zM3 9h2v2H3V9z"/></svg>';
+        restart.before(button);
+      } else this.controls.append(button);
     });
     const surface = this.root.querySelector<HTMLElement>('.pg-surface')!;
     surface.addEventListener('pointerdown', event => { if (this.state === 'running') { event.preventDefault(); this.root.focus({ preventScroll: true }); } });
@@ -216,7 +220,9 @@ export class GameCaptcha {
     if (score >= this.target) {
       this.freeze(); this.state = 'passed'; this.update();
       const result: VerificationResult = { game: this.definition.id, score, targetScore: this.target, durationMs: Math.round(this.duration), completedAt: new Date().toISOString() };
-      this.emit(); this.options.onVerify?.(result);
+      const generation = this.generation, onVerify = this.options.onVerify;
+      this.emit();
+      if (!this.destroyed && generation === this.generation && this.state === 'passed') onVerify?.(result);
     } else { this.update(); this.emit(); }
   }
   private fail(reason: string) {
@@ -228,7 +234,7 @@ export class GameCaptcha {
     this.scoreElement.textContent = String(this.score);
     this.progress.setAttribute('aria-valuenow', String(Math.min(this.score, this.target)));
     this.progress.querySelector<HTMLElement>('i')!.style.width = `${Math.min(this.score / this.target, 1) * 100}%`;
-    this.controls.querySelectorAll('button').forEach(button => { button.disabled = this.state !== 'running'; });
+    this.root.querySelectorAll<HTMLButtonElement>('.pg-controls button, .pg-undo').forEach(button => { button.disabled = this.state !== 'running'; });
     this.live.textContent = this.state === 'failed' && reason ? reason : this.t(this.state);
     this.overlay.replaceChildren(); this.overlay.hidden = this.state === 'running';
     if (this.state === 'running') return;
@@ -257,4 +263,5 @@ export class GameCaptcha {
     }
   };
 }
-export function createCaptcha(container: string | HTMLElement, options: CaptchaOptions = {}) { return new GameCaptcha(container, options); }
+export { ArcadeCaptcha as GameCaptcha };
+export function createCaptcha(container: string | HTMLElement, options: CaptchaOptions = {}) { return new ArcadeCaptcha(container, options); }

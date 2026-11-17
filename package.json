@@ -1,32 +1,50 @@
 {
-  "name": "game-captcha",
+  "name": "arcade-captcha",
   "version": "0.1.0",
-  "description": "A compact pixel-art game CAPTCHA with seven playable challenges.",
-  "repository": { "type": "git", "url": "https://github.com/superwyh/game-captcha.git" },
-  "homepage": "https://superwyh.github.io/game-captcha/",
-  "bugs": { "url": "https://github.com/superwyh/game-captcha/issues" },
+  "description": "A compact pixel-art game CAPTCHA with twelve playable challenges.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superwyh/Arcade-CAPTCHA.git"
+  },
+  "homepage": "https://superwyh.github.io/Arcade-CAPTCHA/",
+  "bugs": {
+    "url": "https://github.com/superwyh/Arcade-CAPTCHA/issues"
+  },
   "type": "module",
   "license": "MIT",
   "sideEffects": [
     "**/*.css",
     "./src/index.ts",
-    "./lib/game-captcha.js",
-    "./lib/game-captcha.umd.cjs"
+    "./lib/arcade-captcha.js",
+    "./lib/arcade-captcha.umd.cjs"
   ],
   "files": [
     "lib",
     "README.md",
     "LICENSE"
   ],
-  "main": "./lib/game-captcha.js",
-  "module": "./lib/game-captcha.js",
+  "main": "./lib/arcade-captcha.js",
+  "module": "./lib/arcade-captcha.js",
   "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
-      "import": "./lib/game-captcha.js"
+      "import": "./lib/arcade-captcha.js"
     },
-    "./style.css": "./lib/game-captcha.css"
+    "./style.css": "./lib/arcade-captcha.css",
+    "./core": { "types": "./lib/api.d.ts", "import": "./lib/core.js" },
+    "./games/tetris": { "types": "./lib/games/tetris.d.ts", "import": "./lib/games/tetris.js" },
+    "./games/2048": { "types": "./lib/games/merge.d.ts", "import": "./lib/games/2048.js" },
+    "./games/minesweeper": { "types": "./lib/games/minesweeper.d.ts", "import": "./lib/games/minesweeper.js" },
+    "./games/breakout": { "types": "./lib/games/breakout.d.ts", "import": "./lib/games/breakout.js" },
+    "./games/fps": { "types": "./lib/games/fps.d.ts", "import": "./lib/games/fps.js" },
+    "./games/adventure": { "types": "./lib/games/adventure.d.ts", "import": "./lib/games/adventure.js" },
+    "./games/racing": { "types": "./lib/games/racing.d.ts", "import": "./lib/games/racing.js" },
+    "./games/snake": { "types": "./lib/games/snake.d.ts", "import": "./lib/games/snake.js" },
+    "./games/space": { "types": "./lib/games/space.d.ts", "import": "./lib/games/space.js" },
+    "./games/pacman": { "types": "./lib/games/pacman.d.ts", "import": "./lib/games/pacman.js" },
+    "./games/sokoban": { "types": "./lib/games/sokoban.d.ts", "import": "./lib/games/sokoban.js" },
+    "./games/bubbles": { "types": "./lib/games/bubbles.d.ts", "import": "./lib/games/bubbles.js" }
   },
   "scripts": {
     "predev": "npm run build:lib",
@@ -34,17 +52,25 @@
     "predemo": "npm run build:lib",
     "demo": "vite --host 127.0.0.1 --open",
     "typecheck": "tsc --noEmit",
+    "prepare:assets": "node scripts/prepare-assets.mjs",
+    "pretest": "npm run prepare:assets",
     "test": "vitest run",
     "test:watch": "vitest",
+    "pretest:watch": "npm run prepare:assets",
+    "pretest:browser": "npm run build",
+    "test:browser": "playwright test",
     "build:demo": "npm run build:lib && vite build && node scripts/prepare-demo.mjs && node scripts/check-build.mjs",
-    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/prepare-lib.mjs",
+    "build:lib": "npm run prepare:assets && vite build --config vite.lib.config.ts && vite build --config vite.lib.config.ts --mode umd && tsc -p tsconfig.lib.json && node scripts/prepare-lib.mjs",
     "build": "npm run typecheck && npm run build:demo",
     "preview": "vite preview --host 127.0.0.1",
     "prepublishOnly": "npm test && npm run build"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/node": "^22.10.0",
+    "highlight.js": "^11.12.0",
     "jsdom": "^26.0.0",
+    "pngjs": "^7.0.0",
     "typescript": "~5.8.3",
     "vite": "^8.3.7",
     "vitest": "^5.1.0"

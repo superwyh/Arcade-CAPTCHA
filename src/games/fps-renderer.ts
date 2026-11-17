@@ -114,7 +114,6 @@ export class FpsRenderer {
         pixels[p] = (level + (model.cleared === 2 ? 12 : 3)) * shade;
         pixels[p + 1] = level * shade;
         pixels[p + 2] = (level - 8) * shade;
-        // Recessed ceiling strips give the corridors a legible sense of depth.
         if (!floor && Math.floor(wx) % 3 === 1 && (tx & 15) >= 3 && (tx & 15) <= 12 && (ty & 15) >= 6 && (ty & 15) <= 8) {
           pixels[p] = 174 * shade; pixels[p + 1] = 186 * shade; pixels[p + 2] = 165 * shade;
         }

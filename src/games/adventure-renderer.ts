@@ -1,5 +1,5 @@
-import dungeonUrl from '../assets/adventure-dungeon.png';
-import heroUrl from '../assets/adventure-hero.png';
+import dungeonUrl from '../assets/runtime/adventure-dungeon.png';
+import heroUrl from '../assets/runtime/adventure-hero.png';
 import { AdventureModel, ROOM_HEIGHT, ROOM_WIDTH, type Direction } from './adventure-model';
 import { swordFrame } from './adventure-combat';
 
@@ -17,7 +17,7 @@ async function loadSheet(url: string) {
     image.onload = () => resolve(); image.onerror = () => reject(new Error('Adventure sprite sheet failed to load.'));
     image.src = url;
   });
-  // Cache at the intended logical resolution: each animation frame is 32 × 32.
+  // Cache the atlas at 32 × 32 pixels per frame.
   const sheet = buffer(128, 128), ctx = sheet.getContext('2d')!;
   ctx.imageSmoothingEnabled = false; ctx.drawImage(image, 0, 0, 128, 128);
   return sheet;
@@ -76,7 +76,6 @@ export class AdventureRenderer {
         || x === 14 && y >= 4 && y <= 5 && model.room.doors.right !== undefined;
       if (!gap) this.sprite(13, X + x * TILE, Y + y * TILE, TILE);
     }
-    // Large, quiet floor and chunky pillars keep sprites readable at captcha size.
     for (const pillar of model.room.walls) this.sprite(1, X + (pillar.x + .5) * TILE - 12, Y + (pillar.y + .5) * TILE - 16, 24);
     for (const [direction, roomId] of Object.entries(model.room.doors) as [Direction, number][]) {
       const vertical = direction === 'up' || direction === 'down';
@@ -126,11 +125,9 @@ export class AdventureRenderer {
       } else if (model.invulnerable <= 0 || Math.floor(model.invulnerable * 12) % 2) {
         const facing = model.swing > 0 ? model.attackFacing : model.facing;
         const frame = model.swing > 0 ? swordFrame(model.swing) : model.moving ? Math.floor(model.walking) % 2 : 0;
-        // The hand, arm and blade are a single generated animation frame; never a separate arc.
         const row = heroRow[facing], px = Math.round(X + model.x * TILE - 16), py = Math.round(Y + model.y * TILE - 16);
         if (model.swing <= 0) {
-          // Walk cycles share one fixed head/torso. Only the boots change, so
-          // slight differences between generated frames cannot make the body shimmer.
+          // Reuse the torso between walking frames to prevent sprite jitter.
           ctx.drawImage(this.hero!, 0, row * 32, 32, 24, px, py, 32, 24);
           ctx.drawImage(this.hero!, frame * 32, row * 32 + 24, 32, 8, px, py + 24, 32, 8);
         } else this.sprite(row * 4 + frame, px, py, 32, 32, this.hero!);

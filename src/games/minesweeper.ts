@@ -122,8 +122,8 @@ export const minesweeperGame: GameDefinition = {
         if (action === 'flag') { flagMode = !flagMode; context.announce(context.t(flagMode ? 'flagOn' : 'flagOff')); }
         else if (action === 'left') selected = selected % 8 ? selected - 1 : selected;
         else if (action === 'right') selected = selected % 8 < 7 ? selected + 1 : selected;
-        else if (action === 'up') selected = Math.max(0, selected - 8);
-        else if (action === 'down') selected = Math.min(47, selected + 8);
+        else if (action === 'up' && selected >= board.width) selected -= board.width;
+        else if (action === 'down' && selected < board.width * (board.height - 1)) selected += board.width;
         else if (action === 'reveal' || action === 'drop') revealOrFlag();
         render();
       },

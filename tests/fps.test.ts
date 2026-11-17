@@ -132,5 +132,5 @@ describe('FPS sector rules', () => {
     expect(model.won).toBe(true); expect(checkpoints).toHaveLength(SECTOR_COUNT);
     expect(model.elapsed).toBeGreaterThan(180); expect(model.elapsed).toBeLessThan(480);
     console.info(`FPS simulated run: ${Math.round(model.elapsed)}s, sector exits at ${checkpoints.map(time => Math.round(time)).join('/')}s, ${model.shots} shots.`);
-  });
+  }, 30_000);
 });

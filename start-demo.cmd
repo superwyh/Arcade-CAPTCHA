@@ -14,6 +14,6 @@ if not exist "node_modules\vite\bin\vite.js" (
     exit /b 1
   )
 )
-echo Starting Game CAPTCHA. Keep this window open while playing.
+echo Starting Arcade CAPTCHA. Keep this window open while playing.
 call npm run demo
 if errorlevel 1 pause

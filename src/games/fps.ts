@@ -3,7 +3,7 @@ import { animationLoop, canvasSurface } from './shared';
 import { FpsModel, angleDifference, SECTOR_COUNT, type FpsEvent } from './fps-model';
 import { FpsRenderer } from './fps-renderer';
 
-/** Small, locally synthesized effects; audio is opened only after player input. */
+/** Audio starts after the first user interaction. */
 class FpsAudio {
   private context?: AudioContext;
   private voices = new Set<AudioScheduledSourceNode>();
@@ -100,7 +100,6 @@ export const fpsGame: GameDefinition = {
       if (locked() && !active) unlockPointer();
       if (!locked()) { inputs.clear(); taps.clear(); pointer = undefined; }
     };
-    // Losing the window cannot leave canvas fire or held actions running.
     const blur = () => clear();
     canvas.addEventListener('pointerdown', down); canvas.addEventListener('pointermove', move);
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up); canvas.addEventListener('lostpointercapture', up);

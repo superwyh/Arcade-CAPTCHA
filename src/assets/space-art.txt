@@ -1,0 +1,11 @@
+Space shooter assets
+License: MIT (see ../../LICENSE).
+Source: imagegen, 2026-11-11.
+
+space-atlas.png
+- Source image: 1774 x 887, 4 columns x 2 rows.
+- Runtime atlas: 192 x 96, 48 x 48 pixels per cell.
+- Row 1: player ship straight, banking left, banking right, red enemy.
+- Row 2: yellow enemy, boss, small explosion, large explosion.
+- Player ships face up; enemy ships face down.
+- Sprites are centered in each cell with transparent backgrounds.

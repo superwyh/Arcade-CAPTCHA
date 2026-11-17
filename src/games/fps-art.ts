@@ -1,6 +1,6 @@
 import type { EnemyKind } from './fps-model';
 
-// Scan-converted shapes keep every edge on the pixel grid, including diagonals.
+// Rasterize polygons in whole-pixel scanlines.
 function sprite(width: number, height: number) {
   const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
   const ctx = canvas.getContext('2d')!;
@@ -28,7 +28,6 @@ export function monster(kind: EnemyKind, step: number, hurt = false) {
   const mid = guard ? '#747652' : brute ? '#c15b46' : '#b48351';
   const light = guard ? '#a4a077' : brute ? '#dc8960' : '#d0a36c';
   const leg = guard ? '#565b41' : shadow, stride = step ? 2 : 0;
-  // Feet, knees and pelvis have separate volumes, rather than a rectangular body.
   poly('#121313', [[5, 52], [13, 50], [29, 50], [35, 53], [30, 55], [7, 55]]);
   poly(outline, [[11, 32], [21, 33], [19, 45 - stride], [16, 53 - stride], [7, 53 - stride], [10, 44]]);
   poly(leg, [[12, 34], [19, 34], [16, 43], [14, 49 - stride], [10, 49 - stride], [12, 41]]);
@@ -45,14 +44,12 @@ export function monster(kind: EnemyKind, step: number, hurt = false) {
   rect(light, 13, 18, 5, 2); rect(light, 23, 18, 4, 2);
   poly(skin, [[16, 26], [20, 25], [24, 27], [24, 32], [17, 33]]);
   rect(shadow, 19, 27, 2, 6); rect(light, 17, 27, 2, 2); rect(mid, 22, 29, 2, 2);
-  // Bent arms and hands; the guard holds a weapon across its chest.
   poly(outline, [[10, 16], [14, 19], [11, 26], [9, 34], [4, 34], [2, 29], [5, 20]]);
   poly(skin, [[8, 18], [12, 20], [9, 26], [8, 31], [4, 30], [5, 24]]);
   rect(light, 6, 21, 3, 4); rect(shadow, 4, 29, 4, 2); rect(mid, 4, 32, 5, 3);
   poly(outline, [[29, 15], [35, 19], [38, 29], [36, 35], [30, 34], [29, 26]]);
   poly(skin, [[30, 18], [34, 21], [36, 29], [34, 32], [31, 30], [32, 26]]);
   rect(light, 31, 20, 3, 4); rect(mid, 31, 32, 5, 3);
-  // Jaw, cheek planes, brow and small bright eyes keep the face readable at distance.
   poly(outline, [[15, 4], [24, 3], [28, 7], [27, 13], [23, 17], [17, 16], [13, 11], [13, 7]]);
   poly(skin, [[16, 5], [23, 4], [26, 7], [25, 12], [22, 15], [17, 13], [15, 9]]);
   rect(light, 17, 6, 5, 2); rect(shadow, 15, 9, 4, 2); rect(shadow, 22, 8, 4, 3);
@@ -84,8 +81,7 @@ export function monster(kind: EnemyKind, step: number, hurt = false) {
 
 export function weapon() {
   const { canvas, rect, poly } = sprite(72, 40);
-  // View from behind: narrow muzzle near the horizon, broad receiver near the eye.
-  // Both barrel edges converge toward (36, 9); there is no front-facing bore.
+  // Barrel edges converge toward the muzzle at (36, 9).
   poly('#17191a', [[31, 9], [40, 9], [48, 31], [45, 40], [25, 40], [24, 31]]);
   poly('#3a4244', [[32, 10], [39, 10], [45, 28], [27, 28]]);
   poly('#697777', [[33, 10], [36, 10], [36, 28], [29, 28]]);
@@ -94,21 +90,18 @@ export function weapon() {
   poly('#252e32', [[37, 10], [39, 11], [45, 28], [39, 28]]);
   rect('#b4b9a6', 33, 9, 6, 1);
   rect('#11191b', 35, 7, 2, 3); rect('#a4aa94', 35, 7, 1, 1);
-  // Steel bands and wood pump follow the same perspective as the barrel.
   poly('#171e20', [[29, 21], [42, 21], [43, 24], [28, 24]]);
   poly('#7e8e89', [[30, 21], [42, 21], [42, 22], [30, 22]]);
   poly('#30241e', [[27, 25], [44, 25], [48, 33], [24, 33]]);
   poly('#9c7046', [[28, 25], [42, 25], [45, 31], [25, 31]]);
   poly('#c1995d', [[29, 25], [33, 25], [31, 31], [26, 31]]);
   for (let y = 26; y <= 30; y += 2) rect('#4c3629', 28 - Math.floor((y - 26) / 2), y, 15 + (y - 26), 1);
-  // Receiver: bevels, ejection slot, rear sight and shaded sides.
   poly('#171d20', [[27, 29], [43, 29], [48, 38], [47, 40], [24, 40], [23, 37]]);
   poly('#59686a', [[28, 30], [41, 30], [45, 38], [26, 38]]);
   poly('#92a19b', [[28, 30], [31, 30], [29, 38], [26, 38]]);
   poly('#303d42', [[40, 30], [43, 30], [47, 38], [44, 38]]);
   rect('#182328', 35, 32, 7, 2); rect('#a3ae9f', 35, 34, 7, 1);
   rect('#171e21', 30, 29, 3, 2); rect('#171e21', 38, 29, 3, 2);
-  // Supporting hand curls under the pump; the rear hand grips from the right.
   poly('#3e302a', [[22, 27], [28, 28], [31, 33], [27, 37], [21, 40], [10, 40], [13, 34]]);
   poly('#ae7f54', [[22, 28], [27, 29], [29, 33], [24, 36], [18, 39], [13, 39], [16, 34]]);
   poly('#d2a576', [[22, 28], [26, 29], [27, 32], [23, 34], [19, 34]]);
@@ -118,8 +111,7 @@ export function weapon() {
   rect('#deb183', 47, 34, 5, 2); rect('#82583b', 47, 38, 8, 1);
   poly('#303c30', [[11, 37], [18, 39], [19, 40], [8, 40]]);
   poly('#303c30', [[56, 38], [61, 38], [64, 40], [57, 40]]);
-  // A right-shoulder hold: the rear receiver is offset, while the muzzle stays
-  // at the aiming axis. Shortening the barrel and this convergence avoid an upright silhouette.
+  // Offset the receiver while keeping the muzzle on the aiming axis.
   const held = document.createElement('canvas'); held.width = 88; held.height = 40;
   const ctx = held.getContext('2d')!; ctx.imageSmoothingEnabled = false;
   for (let y = 0; y < 40; y++) ctx.drawImage(canvas, 0, y, 72, 1, Math.max(0, Math.round((y - 9) * .45)), y, 72, 1);

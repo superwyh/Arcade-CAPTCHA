@@ -1,120 +1,196 @@
-# Game CAPTCHA
+# 🕹️ Arcade CAPTCHA
 
-一个娱乐用途的小游戏验证码框架。
+English · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md)
 
-计划地址：[GitHub](https://github.com/superwyh/game-captcha) · [演示](https://superwyh.github.io/game-captcha/)。当前仅保留本地版本，尚未发布。
+Play a mini-game to complete the CAPTCHA. Includes 12 pixel-art games, configurable goals, random game selection, and nine languages. Built with TypeScript and zero runtime dependencies. Embed it in HTML, React, or Vue.
 
-304 px 紧凑组件，黑白界面、经典配色的像素游戏素材，使用免费开源的 Fusion Pixel 字体。内置俄罗斯方块、2048、扫雷、打砖块、FPS、地下城冒险和赛车；完成指定目标后触发通关回调。原生 TypeScript、零运行时依赖，可嵌入普通 HTML、React、Vue 等网页。
+[GitHub](https://github.com/superwyh/Arcade-CAPTCHA) · [Demo](https://superwyh.github.io/Arcade-CAPTCHA/)
 
-> 这是娱乐用途的前端门槛，不是反机器人或身份验证服务。通关事件不提供安全担保，真正的访问权限须由业务服务端控制。
+<table>
+  <tr><th>🎯 FPS</th><th>⚔️ Adventure</th></tr>
+  <tr>
+    <td><img src="docs/media/fps.gif" alt="FPS" width="304" /></td>
+    <td><img src="docs/media/adventure.gif" alt="Adventure" width="304" /></td>
+  </tr>
+  <tr><th>🏎️ Racing</th><th>🚀 Space shooter</th></tr>
+  <tr>
+    <td><img src="docs/media/racing.gif" alt="Racing" width="304" /></td>
+    <td><img src="docs/media/space.gif" alt="Space shooter" width="304" /></td>
+  </tr>
+  <tr><th>🧱 Tetris</th><th>🔢 2048</th></tr>
+  <tr>
+    <td><img src="docs/media/tetris.gif" alt="Tetris" width="304" /></td>
+    <td><img src="docs/media/2048.gif" alt="2048" width="304" /></td>
+  </tr>
+  <tr><th>💣 Minesweeper</th><th>🎾 Breakout</th></tr>
+  <tr>
+    <td><img src="docs/media/minesweeper.gif" alt="Minesweeper" width="304" /></td>
+    <td><img src="docs/media/breakout.gif" alt="Breakout" width="304" /></td>
+  </tr>
+  <tr><th>🐍 Snake</th><th>👻 Pac-Man</th></tr>
+  <tr>
+    <td><img src="docs/media/snake.gif" alt="Snake" width="304" /></td>
+    <td><img src="docs/media/pacman.gif" alt="Pac-Man" width="304" /></td>
+  </tr>
+  <tr><th>📦 Sokoban</th><th>🫧 Bubble shooter</th></tr>
+  <tr>
+    <td><img src="docs/media/sokoban.gif" alt="Sokoban" width="304" /></td>
+    <td><img src="docs/media/bubbles.gif" alt="Bubble shooter" width="304" /></td>
+  </tr>
+</table>
 
-## 本地启动
+Games: Tetris, 2048, Minesweeper, Breakout, FPS, Adventure, Racing, Snake, Space shooter, Pac-Man, Sokoban, and Bubble shooter.
 
-需要 Node.js **22.12+**（建议 Node 22 最新 LTS 补丁版）及 npm。仓库发布后可执行以下克隆命令；已有本地源码时从 `npm ci` 开始。
+> This is a frontend game gate for entertainment, not a bot-detection or authentication service. Completion events provide no security guarantee. Enforce real access permissions on your server.
+
+## 🏁 Run locally
+
+Requires Node.js **22.12+** (the latest Node 22 LTS patch is recommended) and npm. If you already have the local source, start with `npm ci`.
 
 ```sh
-git clone https://github.com/superwyh/game-captcha.git
-cd game-captcha
+git clone https://github.com/superwyh/Arcade-CAPTCHA.git arcade-captcha
+cd arcade-captcha
 npm ci
 npm run dev
 ```
 
-打开 `http://127.0.0.1:4173/`。开发服务和构建预览固定使用此端口，端口被占用时会报错，不会改用其他地址。测试台支持：
+Open `http://127.0.0.1:4173/`. Both the development server and build preview use this fixed port and report an error if it is occupied.
 
-Windows 也可以双击 [`start-demo.cmd`](start-demo.cmd)，它会在缺少依赖时安装依赖，随后启动本地服务并打开浏览器。体验期间保持命令窗口开启，关闭窗口即可停止服务。
+On Windows, you can also double-click [`start-demo.cmd`](start-demo.cmd). It installs missing dependencies, starts the local server, and opens the browser. Keep the command window open while using the demo; close it to stop the server.
 
-- 七种游戏切换、独立目标设置、恢复默认、随机模式。
-- 实际尺寸预览、得分与重试。
-- 游戏加载与重置后直接开始，达标后解锁“进入页面”。
-- 根据当前设置生成 JavaScript / HTML 接入代码，以及可直接复制给大模型的「AI 提示词」；提示词包含 GitHub 地址、下载构建命令、资源路径、当前配置、通关处理和生命周期要求，支持九种语言。API 参数按需展开。
+The playground includes:
 
-## 默认规则
+- Direct switching between all 12 games, per-game targets, default settings, and random mode.
+- A preview at the actual widget size, scores, and retries.
+- Immediate play after loading or resetting; completion unlocks the page-entry button.
+- JavaScript / HTML integration code and a copyable AI integration prompt based on the current settings. API options expand on demand.
 
-| 游戏 ID | 游戏 | 默认目标 | 计分方式 | 可配置范围 |
+Standalone login demo: `http://127.0.0.1:4173/examples/login.html`. It defaults to English. Click Sign in with the prefilled demo account to open a randomly selected game; consecutive openings never repeat the same game. Completing it finishes the simulated login. No credentials are sent or saved. Use `?lang=zh-CN` or another language tag to switch languages, or `?lang=auto` to follow the browser.
+
+## 🎮 Default rules
+
+| Game ID | Game | Default goal | Scoring | Target range |
 | --- | --- | --- | --- | --- |
-| `tetris` | 俄罗斯方块 | 500 分 | 一次消除 1 / 2 / 3 / 4 行得 100 / 300 / 500 / 800 分 | 1–10000 |
-| `2048` | 2048 | 128 分 | 合并时增加合成数字的值；目标是累计得分，不是最大方块 | 1–10000 |
-| `minesweeper` | 扫雷 | 清屏：全部 40 个安全格 | 每翻开一个安全格得 1 分，空白区域展开也计入 | 1–40 |
-| `breakout` | 打砖块 | 清屏：全部 24 块砖（240） | 每块砖 10 分，共 24 块砖、3 次接球机会 | 1–240 |
-| `fps` | 第一人称射击 | 5 关，预计约 5–7 分钟 | 每关清敌、拿到红钥匙并进入出口计 1；杀敌本身不放行 | 1–5 |
-| `adventure` | 冒险 | 通关 1 座地下城 | 取得钥匙、击败守卫并走到出口楼梯后计 1 | 1–3 |
-| `racing` | 赛车 | 1500 米 | 存活并驶过终点 | 1–10000 |
+| `tetris` | Tetris | 500 points | Clear 1 / 2 / 3 / 4 lines for 100 / 300 / 500 / 800 points | 1–10000 |
+| `2048` | 2048 | 128 points | Merges add the resulting tile value; the goal is total score, not the largest tile | 1–10000 |
+| `minesweeper` | Minesweeper | Reveal all 40 safe cells | Each revealed safe cell adds 1, including cells revealed by flood fill | 1–40 |
+| `breakout` | Breakout | Clear all 24 bricks (240 points) | 10 points per brick; 24 bricks and three lives | 1–240 |
+| `fps` | FPS | 5 sectors, about 5–7 minutes | Clear enemies, collect the red key, and reach the exit for 1; kills alone do not complete verification | 1–5 |
+| `adventure` | Adventure | Complete 1 dungeon | Collect the key, defeat the guardian, and reach the exit stairs for 1 | 1–3 |
+| `racing` | Racing | 1500 meters | Survive and cross the finish line | 1–10000 |
+| `snake` | Snake | Eat 12 food items | Each food item adds 1 and grows the snake by one cell | 1–100 |
+| `space` | Space shooter | 3 stages: two waves and a boss | Each cleared stage adds 1; the final stage is always a boss | 1–5 |
+| `pacman` | Pac-Man | Collect all 140 pellets | Regular and power pellets each add 1; eating ghosts does not increase progress | 1–140 |
+| `sokoban` | Sokoban | Complete 1 level | Progress increases only when every box reaches a goal; multiple levels can be required | 1–5 |
+| `bubbles` | Bubble shooter | Clear 1 board | Progress increases only after clearing the entire board, not individual groups | 1–5 |
 
-默认扫雷须翻开全部安全格，打砖块须消除全部砖块。开发者仍可配置较低的目标，此时 `score >= targetScore` 即通过。例如打砖块设为 15 分时，击碎两块砖即通过。扫雷采用 8×6 棋盘和 8 个雷，首次点击及相邻格保证安全，开局不会直接翻完所有安全格；按标准扫雷规则展开空白区域。俄罗斯方块使用七袋随机，每袋含全部七种方块。
+Minesweeper and Breakout require a full clear by default. Developers can set lower targets; verification then passes when `score >= targetScore`. For example, a Breakout target of 15 passes after two bricks. Minesweeper uses an 8×6 board with eight mines. The first click and its neighboring cells are safe, without revealing every safe cell immediately; blank areas expand using standard Minesweeper rules. Tetris uses a seven-bag randomizer containing all seven pieces in each bag.
 
-键盘操作仅在组件内生效，不占用整页方向键。切换到后台标签页时自动暂停，回来后自动继续。按钮、滑动、点击或拖动支持手机操作。
+Keyboard controls apply only inside the widget and do not take over page-wide arrow keys. Switching to a background tab pauses play automatically; returning resumes it. Buttons, swipes, clicks, and dragging support mobile play.
 
 ### FPS
 
-测试台选择 `FPS`，或打开 `/?game=fps`。使用 `game: 'fps'` 接入；`targetScore` 为需要完成的关卡数，默认 5，可设为 1–5。每局及每关随机生成 25×25 地图，包含 7–9 个相连房间、岔路和环路，随机安排敌人、补给、钥匙与出口。
+Select `FPS` in the playground or open `/?game=fps`. Embed it with `game: 'fps'`. `targetScore` is the required number of completed sectors: 5 by default, configurable from 1 to 5. Every run and sector generates a new 25×25 map with 7–9 connected rooms, branches, loops, enemies, supplies, a key, and an exit.
 
-W/S 或上下方向键前进、后退；A/D 或左右方向键转向；Q/E 平移。鼠标在画面内移动即可转向，点击后支持鼠标锁定，Esc 释放；空格、回车或点击射击。手机支持拖动转向及下方方向、射击按钮。弹药用尽后可以近身攻击。清敌并拿到红钥匙后开启出口；后台、失焦、重试和切换游戏会释放持续输入及鼠标锁定。
+Use W/S or Up/Down to move forward and backward; A/D or Left/Right to turn; Q/E to strafe. Moving the mouse over the game turns the camera; clicking enables pointer lock, and Esc releases it. Space, Enter, or clicking fires. Mobile supports drag-to-turn and directional/fire buttons. When ammunition runs out, close-range attacks remain available. Clear enemies and collect the red key to unlock the exit. Backgrounding, losing focus, retrying, and switching games release held inputs and pointer lock.
 
-使用本地 Canvas 射线投射、原创像素素材和合成音效，代码及原创素材遵循本项目 MIT 协议；字体保留原有 OFL 授权。音效在首次操作后启用，离开游戏时清理。
+Uses Canvas raycasting and synthesized sound. Audio starts after the first interaction and is released when leaving the game.
 
-### 冒险
+### Adventure
 
-测试台选择“冒险”，或打开 `/?game=adventure`。接入参数为 `game: 'adventure'`，默认 `targetScore: 1`，可设置为 1–3 座地下城。
+Select Adventure or open `/?game=adventure`. Embed with `game: 'adventure'`; the default `targetScore: 1` can be set to 1–3 dungeons.
 
-九个相连房间，包含史莱姆、蝙蝠、骷髅和石像守卫。清敌后打开房门和宝箱，宝箱可提供钥匙、剑强化、生命上限及治疗。钥匙开启守卫房；击败守卫后走入楼梯才通关。小地图显示当前房间及已探索区域。
+Nine connected rooms contain slimes, bats, skeletons, and a stone guardian. Defeating enemies opens doors and chests. Chests provide keys, sword upgrades, maximum-health increases, and healing. A key unlocks the guardian room; defeat the guardian and enter the stairs to finish. The minimap shows the current room and explored areas.
 
-WASD / 方向键移动，空格 / J / 回车攻击；点击或按住画面攻击，拖动移动；触屏也可使用下方方向及攻击按钮。使用已有的实体键识别和失焦释放机制。
+Move with WASD / arrow keys and attack with Space / J / Enter. Click or hold the game area to attack and drag to move; touch devices also have directional and attack buttons. Physical-key recognition and input release on focus loss are supported.
 
-角色使用四方向行走、蓄力和出剑动画，攻击期间固定朝向，出剑阶段对前方敌人判定伤害，并保留距离和侧向容错。地下城采用蓝色块状墙面、低细节地板和房间滚动切换。
+Assets: [character animation](src/assets/adventure-hero.png), [dungeon atlas](src/assets/adventure-dungeon.png), and [asset notes](src/assets/adventure-art.txt).
 
-角色和场景均由内置 imagegen 生成：[角色动画图集](src/assets/adventure-hero.png)、[地下城图集](src/assets/adventure-dungeon.png)。生成提示词及来源记录见 [adventure-art.txt](src/assets/adventure-art.txt)。图片随库打包，运行时不调用图像服务，适用于 GitHub Pages 子路径部署。
+### Racing
 
-### 赛车
+Select Racing or open `/?game=racing`. Embed with `game: 'racing'`. The default goal is 1500 meters, configurable from 1 to 10000. The car advances automatically; three collisions end the run. Curves and traffic vary randomly. The default course takes about a minute.
 
-测试台选择“赛车”，或打开 `/?game=racing`。接入参数 `game: 'racing'`，默认目标 1500 米，可配置为 1–10000 米。自动前进，三次碰撞后失败；弯道、交通车辆随机变化，约一分钟完成默认赛程。
+Steer with A/D or Left/Right, brake with S/Down, and boost with W/Up/Space. Dragging and touch buttons are supported. Leaving the road slows the car; staying off-road for two seconds costs a life. Retrying generates a new course.
 
-A/D 或左右键转向，S/下键刹车，W/上键/空格加速；支持画面拖动和触屏按钮。驶离公路会减速，持续两秒会损失一次机会。重试重新生成赛道。
+Assets: [vehicle atlas](src/assets/racing-atlas.png) and [asset notes](src/assets/racing-art.txt).
 
-[赛车图集](src/assets/racing-atlas.png)由内置 imagegen 生成，包含玩家车辆、交通车辆和棕榈树；[提示词与来源](src/assets/racing-art.txt)随开源仓库提供。图集随组件打包。
+### Snake
 
-## 多语言与字体
+Select Snake or open `/?game=snake`. Embed with `game: 'snake'`. The default `targetScore: 12` can be set to 1–100 food items. The snake moves automatically on a 22×16 board, growing and accelerating as it eats. Hitting a wall or itself ends the run. Food appears only in empty cells.
 
-组件和测试台自动按 `navigator.languages` 的优先顺序匹配简体中文、繁体中文、英文、日文、韩文、法文、德语、西班牙语、葡萄牙语；不支持的语言回退到英文。`zh-Hant`、`zh-TW`、`zh-HK`、`zh-MO` 使用繁体，`zh-Hans` 使用简体；`fr-CA`、`pt-BR` 等地区标签匹配对应语言。
+Turn with arrow keys, WASD, swipes, or touch buttons. Direct reversal is blocked, and consecutive turns execute in order. Physical keys work with a Chinese input method active. The classic green snake and red food are drawn with Canvas and require no image assets.
 
-开发者可传入 `locale: 'zh-TW'`，也可通过 `reset({ locale: 'ja' })` 切换实例语言。`getGames(locale)` 返回对应语言的游戏名称。测试台可通过 `?lang=ja` 等参数预览语言，不指定时跟随浏览器。
+### Space shooter
 
-Fusion Pixel 12px 覆盖上述语言，随项目本地加载，无需访问字体 CDN。字体使用 [SIL OFL 1.1](third-party/fusion-pixel/OFL.txt)，可以免费使用、商用和随项目分发；保留 `lib/licenses/` 内的字体及上游授权。发布版本：`v2026.11.10`，来源：[TakWolf/fusion-pixel-font](https://github.com/TakWolf/fusion-pixel-font)。字体文件位于 `lib/fonts/`，与组件一同部署。
+Select Space shooter or open `/?game=space`. Embed with `game: 'space'`. The default `targetScore: 3` gives two enemy waves followed by a boss. Targets range from 1 to 5 stages, with a boss always last; setting 1 starts directly with the boss. Progress increases only after clearing an entire wave or defeating the boss.
 
-## 构建与测试
+Starts and fires automatically. Move with arrow keys, WASD, dragging, or touch buttons; physical keys work with Chinese input methods. The player has three lives and brief invulnerability after taking damage. Between stages, projectiles are cleared and one life is restored. Leaving releases inputs; retrying regenerates enemy attack timing.
+
+Assets: [space shooter atlas](src/assets/space-atlas.png) and [asset notes](src/assets/space-art.txt).
+
+### Pac-Man
+
+Select Pac-Man or open `/?game=pacman`. Embed with `game: 'pacman'`. The default goal is all 140 pellets, including four power pellets; `targetScore` can be set to 1–140. Eating ghosts does not increase verification progress.
+
+A 21×15 maze with three lives. Turn using arrow keys, WASD, swipes, or touch buttons. Turns can be queued, movement can be reversed, and the left/right tunnels connect. Power pellets grant seven seconds to eat ghosts, which then return to their spawn point. Collected pellets remain after taking damage, and respawning grants brief invulnerability. Retrying resets the maze.
+
+### Sokoban
+
+Select Sokoban or open `/?game=sokoban`. Embed with `game: 'sokoban'`. The default goal is one level; `targetScore` can require 1–5 consecutive levels. Five maps from the [Boxoban hard set](https://github.com/google-deepmind/boxoban-levels) each have four boxes, with minimum push counts of 27, 20, 21, 20, and 19. Solving them requires ordering pushes, moving boxes temporarily, and finding routes around them. Progress increases only when every box reaches a goal; movement, pushes, and undo do not score.
+
+Move with arrow keys, WASD, swipes, or touch buttons. Z or the top undo icon reverses one move, including a push. Physical keys work with Chinese input methods. Push one box at a time; boxes cannot be pulled. Undo or retry when a box gets stuck. Completed levels advance automatically, and undo applies only to the current level. Retrying starts from the first level.
+
+Levels come from the Apache 2.0-licensed Boxoban dataset published by Arthur Guez and collaborators. Only solid-wall borders were cropped, and two maps were transposed to fit the widget. Original levels, provenance, and the full license are in [third-party/boxoban/](third-party/boxoban/), distributed with builds under `lib/licenses/` and `dist/licenses/`.
+
+### Bubble shooter
+
+Select Bubble shooter or open `/?game=bubbles`. Embed with `game: 'bubbles'`. The default goal is one cleared board; `targetScore` can require 1–5 boards. Each board randomly arranges four bubble colors. Three or more connected bubbles of the same color pop together, and bubbles disconnected from the ceiling fall. Boards start with five rows and 63 bubbles, increasing to six rows from the third board.
+
+Aim with the mouse, touch dragging, A/D, or Left/Right. Fire by clicking/releasing, pressing Space/Enter, or using the fire button. A dotted guide shows bounces and the landing position; the next bubble is previewed beside the launcher. Only colors remaining on the board are supplied, and only one bubble can be in flight. Five consecutive shots without a match lower the ceiling by one row; a match resets the counter. Reaching the bottom line ends the run. Retrying generates a new board and clears progress.
+
+## Languages and fonts
+
+The widget and playground match `navigator.languages` in priority order: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, German, Spanish, and Portuguese. Unsupported languages fall back to English. `zh-Hant`, `zh-TW`, `zh-HK`, and `zh-MO` use Traditional Chinese; `zh-Hans` uses Simplified Chinese. Regional tags such as `fr-CA` and `pt-BR` match their base language.
+
+Pass `locale: 'zh-TW'` or switch an instance with `reset({ locale: 'ja' })`. `getGames(locale)` returns localized game names. The playground accepts `?lang=ja` and other language tags; without one, it follows the browser.
+
+Fusion Pixel 12px covers these languages and loads locally without a font CDN. It uses [SIL OFL 1.1](third-party/fusion-pixel/OFL.txt), permitting free use, commercial use, and redistribution. Keep the font and upstream licenses in `lib/licenses/`. Release: `v2026.11.10`, from [TakWolf/fusion-pixel-font](https://github.com/TakWolf/fusion-pixel-font). Font files live in `lib/fonts/` and deploy with the widget.
+
+## Build and test
 
 ```sh
-npm test            # 规则和验证生命周期测试
-npm run typecheck   # TypeScript 检查
-npm run build       # 测试台 + 可分发组件 + 类型声明
-npm run preview     # 预览 dist，通常为 http://127.0.0.1:4173
+npm test            # Game rules and verification lifecycle tests
+npm run typecheck   # TypeScript checks
+npm run build       # Playground, distributable widget, and declarations
+npm run preview     # Preview dist at http://127.0.0.1:4173
 ```
 
-- `dist/`：可静态部署的测试站点，包含 `examples/basic.html` 与它需要的 `lib/`。
-- `lib/game-captcha.js`：ES Module 组件。
-- `lib/game-captcha.umd.cjs`：UMD 构建，全局名称 `GameCaptcha`。
-- `lib/game-captcha.css`：必须同时加载的组件样式。
-- `lib/index.d.ts`：完整类型声明。
+- `dist/`: static demo site, including `examples/basic.html` and its required `lib/`.
+- `lib/arcade-captcha.js`: ES module widget.
+- `lib/arcade-captcha.umd.cjs`: UMD build with the global name `ArcadeCaptcha`.
+- `lib/arcade-captcha.css`: required widget styles.
+- `lib/index.d.ts`: complete type declarations.
 
-构建产物不提交 Git，由 CI 重建。组件不依赖网络字体、图片 CDN 或后端服务。
+Build output is not committed to Git; CI rebuilds it. The widget does not depend on remote fonts, image CDNs, or a backend service.
 
-## 接入普通 HTML
+## Embed in HTML
 
-先按上面的 GitHub 地址克隆仓库并运行 `npm ci`、`npm run build:lib`，把完整 `lib/`（包含 `fonts/`、`licenses/`）复制到接入项目的静态资源目录。下面路径按 HTML 所在目录解析，可按实际部署位置调整。用 HTTP 服务访问，不能直接双击 HTML 以 `file://` 打开 ES Module。完整可运行示例见 [`examples/basic.html`](examples/basic.html)：运行 `npm run dev` 后访问 `/examples/basic.html`。
+Clone from the repository URL above and run `npm ci` and `npm run build:lib`. Copy the complete `lib/` directory, including `fonts/` and `licenses/`, into your application's static assets. Paths below are relative to the HTML file; adjust them to your deployment. Serve over HTTP; ES modules cannot be loaded by double-clicking HTML with `file://`. See [`examples/basic.html`](examples/basic.html) for a runnable example at `/examples/basic.html` after `npm run dev`.
 
 ```html
-<link rel="stylesheet" href="./lib/game-captcha.css" />
+<link rel="stylesheet" href="./lib/arcade-captcha.css" />
 <div id="captcha"></div>
-<button id="enter" disabled>进入页面</button>
+<button id="enter" disabled>Enter page</button>
 
 <script type="module">
-  import { createCaptcha } from './lib/game-captcha.js';
+  import { createCaptcha } from './lib/arcade-captcha.js';
 
   const enter = document.querySelector('#enter');
   const gate = createCaptcha('#captcha', {
     game: 'tetris',
     targetScore: 500,
     onStateChange({ state }) {
-      // 重试 / 更换游戏时撤销上次的通行状态。
+      // Revoke previous completion when retrying or switching games.
       enter.disabled = state !== 'passed';
     },
     onVerify(result) {
@@ -124,63 +200,82 @@ npm run preview     # 预览 dist，通常为 http://127.0.0.1:4173
 
   enter.addEventListener('click', () => {
     if (gate.getSnapshot().state === 'passed') {
-      // 替换为你的页面地址；它仍需由业务端控制真正的访问权限。
+      // Replace with your URL; enforce real access permissions server-side.
       window.location.assign('./welcome.html');
     }
   });
 </script>
 ```
 
-## 在 Vite / React / Vue 中接入
+## Embed in Vite / React / Vue
 
-当前未发布 npm 包。按上面的地址克隆并完成 `npm ci`、`npm run build:lib` 后，在消费项目执行 `npm install /absolute/path/to/game-captcha`（替换为本地克隆目录），即可使用下面的包名导入。也可将完整 `lib/` 放入静态目录，按 HTML 示例加载。
+The package is not yet published to npm. After cloning and running `npm ci` and `npm run build:lib`, run `npm install /absolute/path/to/arcade-captcha` in the consuming project, replacing the path with your local clone. You can then import using the package name below. Alternatively, copy the complete `lib/` directory into static assets and follow the HTML example.
 
 ```ts
-import { createCaptcha } from 'game-captcha';
-import 'game-captcha/style.css';
+import { createCaptcha } from 'arcade-captcha';
+import 'arcade-captcha/style.css';
 
 const gate = createCaptcha(element, {
   game: 'random',
-  targets: { tetris: 500, '2048': 128, minesweeper: 40, breakout: 240, fps: 5, adventure: 1, racing: 1500 },
+  targets: { tetris: 500, '2048': 128, minesweeper: 40, breakout: 240, fps: 5, adventure: 1, racing: 1500, snake: 12, space: 3, pacman: 140, sokoban: 1, bubbles: 1 },
   onVerify(result) {
-    // 更新你应用中的通行状态。
+    // Update completion state in your application.
   },
   onStateChange({ state }) {
-    // state !== 'passed' 时撤销通行状态。
+    // Revoke completion when state !== 'passed'.
   },
 });
 
-// React effect cleanup / Vue onBeforeUnmount 中调用：
+// Call in React effect cleanup / Vue onBeforeUnmount:
 gate.destroy();
 ```
 
-React 中在 `useEffect` 挂载到 `ref.current`，返回 `() => gate.destroy()`；Vue 在 `onMounted` 创建，在 `onBeforeUnmount` 清理。单页可同时使用多个独立实例。
+In React, mount into `ref.current` inside `useEffect` and return `() => gate.destroy()`. In Vue, create the instance in `onMounted` and clean it up in `onBeforeUnmount`. Multiple independent instances can share a page.
 
-### 配置与生命周期
+### Import only the games you use
 
-| 配置 | 默认值 | 说明 |
+The default `arcade-captcha` entry still registers all twelve games. Use `arcade-captcha/core` with individual game entries to exclude unused games and their artwork:
+
+```ts
+import { createCaptcha, registerGame } from 'arcade-captcha/core';
+import { tetrisGame } from 'arcade-captcha/games/tetris';
+import 'arcade-captcha/style.css';
+
+registerGame(tetrisGame);
+const gate = createCaptcha(element, { game: 'tetris' });
+```
+
+Each game entry exports its existing definition, such as `tetrisGame`, `fpsGame`, or `mergeGame` from `arcade-captcha/games/2048`. Register each definition once before creating widgets. With this entry, `random` chooses only from registered games. Both entry styles share the same registry; avoid registering a built-in again after importing the full entry. For native HTML, use `./lib/core.js` and `./lib/games/tetris.js` and load the CSS separately. Keep the complete `lib/` directory, including `chunks/`, `games/`, `fonts/`, and `licenses/`.
+
+Source artwork stays in `src/assets/`. Builds and tests run `npm run prepare:assets` to generate small runtime atlases with nearest-neighbor sampling. Do not edit the generated `src/assets/runtime/` files.
+
+Install the browser once with `npx playwright install chromium`, then run `npm run test:browser`. This builds and tests the production site for narrow layouts, keyboard focus, modal cancellation, game switching and unchanged sprite pixels. Screenshots and traces go to `.qa/browser-results/`. To use an installed Chrome instead, set `PLAYWRIGHT_CHANNEL=chrome`.
+
+### Configuration and lifecycle
+
+| Option | Default | Description |
 | --- | --- | --- |
-| `game` | `'tetris'` | 已注册的游戏 ID，或 `'random'` |
-| `locale` | `'auto'` | 自动匹配浏览器语言；也可传入语言标签，如 `ja`、`fr-CA` |
-| `autoStart` | `true` | 挂载、切换和重置后立即开始；传 `false` 可手动控制 |
-| `targetScore` | 当前游戏默认值 | 正整数；不能超过该游戏最大目标 |
-| `targets` | 无 | 按游戏设置目标，优先级高于 `targetScore` |
-| `onVerify(result)` | 无 | 每局最多触发一次，通过后游戏停止 |
-| `onStateChange(snapshot)` | 无 | 状态 / 得分变化时触发，也会在初始化时触发 |
+| `game` | `'tetris'` | A registered game ID or `'random'` |
+| `locale` | `'auto'` | Match the browser language, or pass a language tag such as `ja` or `fr-CA` |
+| `autoStart` | `true` | Start immediately on mount, switch, and reset; set `false` for manual control |
+| `targetScore` | Current game's default | A positive integer within the game's maximum target |
+| `targets` | None | Per-game targets; take precedence over `targetScore` |
+| `onVerify(result)` | None | Called at most once per round; play stops after passing |
+| `onStateChange(snapshot)` | None | Called on state / score changes and during initialization |
 
-`random` 模式从所有已注册游戏中选择，重置会重新抽取，可能连续抽到同一种。随机模式推荐使用 `targets`；共用的 `targetScore` 必须对所有候选游戏有效，否则会抛出 `RangeError`。
+`random` mode chooses from all registered games. Resetting draws again and may select the same game consecutively. Prefer `targets` for random mode; a shared `targetScore` must be valid for every candidate game or a `RangeError` is thrown.
 
-实例方法：`start()`、`pause()`、`resume()`、`reset(partialOptions?)`、`getSnapshot()`、`destroy()`。默认挂载后立即进入 `running`，无需开始按钮；配置 `autoStart: false` 时才停留在 `idle`。
+Instance methods: `start()`, `pause()`, `resume()`, `reset(partialOptions?)`, `getSnapshot()`, and `destroy()`. Mounting enters `running` immediately by default, without a start button. Only `autoStart: false` leaves it in `idle`.
 
-状态流转：`idle → running → passed / failed`；`running ⇄ paused`。`reset()` 清空本局进度并按 `autoStart` 配置立即开始或等待。`reset()` 合并传入选项；要清除原配置，可显式传入 `targetScore: undefined` 或 `targets: undefined`。`destroy()` 清理动画、事件和 DOM，此后实例不再工作。
+States: `idle → running → passed / failed`; `running ⇄ paused`. `reset()` clears progress and starts or waits according to `autoStart`. It merges supplied options; clear earlier values explicitly with `targetScore: undefined` or `targets: undefined`. `destroy()` removes animations, events, and DOM; the instance cannot be used afterward.
 
 ```ts
 interface VerificationResult {
   game: string;
   score: number;
   targetScore: number;
-  durationMs: number;   // 有效游戏时长，不含暂停
-  completedAt: string; // ISO 8601 时间
+  durationMs: number;   // Active play time, excluding pauses
+  completedAt: string; // ISO 8601 timestamp
 }
 
 interface CaptchaSnapshot {
@@ -191,25 +286,25 @@ interface CaptchaSnapshot {
 }
 ```
 
-### 扩展新游戏
+### Add a game
 
-实现 `GameDefinition` 并调用 `registerGame(definition)`。完整接口在 [`src/types.ts`](src/types.ts)，现有游戏在 [`src/games/`](src/games/)。
+Implement `GameDefinition` and call `registerGame(definition)`. See [`src/types.ts`](src/types.ts) for the full interface and [`src/games/`](src/games/) for existing implementations.
 
 ```ts
-import { registerGame, type GameDefinition } from 'game-captcha';
+import { registerGame, type GameDefinition } from 'arcade-captcha';
 
 const customGame: GameDefinition = {
   id: 'your-game',
-  name: '你的游戏',
-  description: '一句话介绍',
-  instructions: '操作方法',
+  name: 'Your game',
+  description: 'A short description',
+  instructions: 'Controls',
   defaultTarget: 10,
   maxTarget: 100,
-  scoreUnit: '分',
-  controls: [{ action: 'reveal', symbol: '↵', label: '执行动作' }],
+  scoreUnit: 'points',
+  controls: [{ action: 'reveal', symbol: '↵', label: 'Perform action' }],
   create({ surface, reportScore, fail, announce }) {
-    // 在 surface 内绘制游戏。
-    // reportScore(累计分数)；fail('失败原因')；announce('操作提示')。
+    // Render the game inside surface.
+    // reportScore(totalScore); fail('Reason'); announce('Status').
     return {
       start() {},
       pause() {},
@@ -222,31 +317,31 @@ const customGame: GameDefinition = {
 registerGame(customGame);
 ```
 
-扩展游戏负责正确实现暂停与资源释放，不直接决定放行。框架统一校验目标、单次通过回调与过期会话隔离。重复注册同名游戏会报错。实时游戏可通过 `GameDefinition.keys` 配置按键，并在会话实现可选的 `setInput(action, pressed)` 接收按住、释放事件；框架在失焦、暂停和重置时释放按键，未实现此方法的游戏继续使用原有 `action()`。
+Custom games must implement pausing and cleanup correctly; they do not directly grant access. The framework validates targets, fires a single completion callback, and isolates stale sessions. Registering a duplicate ID throws an error. Real-time games can define bindings through `GameDefinition.keys` and implement the optional `setInput(action, pressed)` session method for held/released inputs. The framework releases keys on focus loss, pause, and reset. Games without this method continue using `action()`.
 
-## GitHub 开源与部署
+## GitHub and deployment
 
-仓库地址：`https://github.com/superwyh/game-captcha`；Pages 地址：`https://superwyh.github.io/game-captcha/`。Vite 使用相对资源路径 `base: './'`，同时适配根站点与 `https://<user>.github.io/<repository>/` 项目站点，无需写死仓库名。
+Repository: `https://github.com/superwyh/Arcade-CAPTCHA`; Pages: `https://superwyh.github.io/Arcade-CAPTCHA/`. Vite uses relative asset paths with `base: './'`, supporting both root sites and `https://<user>.github.io/<repository>/` without hardcoding a repository name.
 
-1. 将源码及 `package-lock.json` 推送至 GitHub 的 `main` 或 `master` 分支。
-2. 仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
-3. 推送代码，或在 Actions 中手动运行 **Deploy demo to GitHub Pages**。
-4. 工作流执行依赖安装、测试、类型检查与构建，随后将 `dist/` 部署到 Pages。
-5. 部署成功后的网址见工作流环境 `github-pages`。首次部署需在仓库设置中启用 Pages。
+1. Push the source and `package-lock.json` to the `main` or `master` branch on GitHub.
+2. Set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+3. Push code or manually run **Deploy demo to GitHub Pages** in Actions.
+4. The workflow installs dependencies, runs tests and type checks, builds, and deploys `dist/` to Pages.
+5. Find the deployed URL in the workflow's `github-pages` environment. Enable Pages in repository settings before the first deployment.
 
-`.github/workflows/ci.yml` 检查 PR；`pages.yml` 仅在默认分支推送或手动执行时部署，不把 PR 直接发布。部署作业仅授予 Pages 与 OIDC 必需权限。无需数据库、API key 或额外 Secrets。
+`.github/workflows/ci.yml` checks pull requests. `pages.yml` deploys on pushes to `main` or `master`, or on a manual run; pull requests do not deploy directly. The deployment job uses only the necessary Pages and OIDC permissions. No database, API key, or additional secrets are required.
 
-协议：[MIT](LICENSE)。贡献规范：[CONTRIBUTING.md](CONTRIBUTING.md)。安全边界：[SECURITY.md](SECURITY.md)。
+License: [MIT](LICENSE). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Security boundaries: [SECURITY.md](SECURITY.md).
 
-## 目录
+## Project layout
 
 ```text
-src/core.ts            注册、生命周期、目标判定、通关回调
-src/types.ts           游戏扩展与公共 API 类型
-src/games/            七种游戏的独立逻辑与渲染
-src/style.css         可嵌入组件的独立样式
-demo/                 配置测试台与演示欢迎页
-examples/basic.html   最小 HTML 接入示例
-tests/                游戏规则与框架回归测试
-.github/workflows/    CI 与 GitHub Pages 部署
+src/core.ts            Registry, lifecycle, targets, and verification callbacks
+src/types.ts           Game extension and public API types
+src/games/             Independent logic and rendering for all 12 games
+src/style.css          Standalone embeddable widget styles
+demo/                  Configuration playground and demo welcome page
+examples/basic.html    Minimal HTML integration example
+tests/                 Game rules and framework regression tests
+.github/workflows/     CI and GitHub Pages deployment
 ```

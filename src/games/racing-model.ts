@@ -29,7 +29,7 @@ export class RacingModel {
     return value(segment) * (1 - blend) + value(segment + 1) * blend;
   }
   private spawnWave(ahead: number) {
-    // At most two of four lanes are occupied in any wave, with ample distance between waves.
+    // Occupy at most two lanes per wave.
     const lanes = [0, 1, 2, 3];
     const count = this.distance > 200 && this.random() > .35 ? 2 : 1;
     for (let i = 0; i < count; i++) {

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Game CAPTCHA</title>
-  <link rel="stylesheet" href="../lib/game-captcha.css" />
+  <title>Arcade CAPTCHA</title>
+  <link rel="stylesheet" href="../lib/arcade-captcha.css" />
   <style>
     body { margin: 0; min-height: 100vh; display: grid; place-content: center; gap: 18px; background: #fff; color: #171717; font: 12px/1.5 "Fusion Pixel", monospace; }
     h1 { font-size: 24px; font-weight: 400; margin: 0; }
@@ -14,12 +14,12 @@
   </style>
 </head>
 <body>
-  <h1>Game CAPTCHA</h1>
+  <h1>Arcade CAPTCHA</h1>
   <div id="captcha"></div>
   <button id="enter" type="button" disabled></button>
   <p id="welcome" hidden></p>
   <script type="module">
-    import { createCaptcha, createTranslator, resolveLocale } from '../lib/game-captcha.js';
+    import { createCaptcha, createTranslator, resolveLocale } from '../lib/arcade-captcha.js';
     const locale = resolveLocale();
     const t = createTranslator(locale);
     document.documentElement.lang = locale;

@@ -1,0 +1,44 @@
+Boxoban levels (2018)
+https://github.com/google-deepmind/boxoban-levels
+
+Authors: Arthur Guez, Mehdi Mirza, Karol Gregor, Rishabh Kabra,
+Sebastien Racaniere, Theophane Weber, David Raposo, Adam Santoro,
+Laurent Orseau, Tom Eccles, Greg Wayne, David Silver,
+Timothy Lillicrap, and Victor Valdes.
+
+Licensed under the Apache License, Version 2.0. See LICENSE.txt.
+This notice applies to the selected level data, not the MIT-licensed game engine.
+
+Source:
+https://raw.githubusercontent.com/google-deepmind/boxoban-levels/master/hard/000.txt
+Retrieved: 2026-11-11
+The original selected 10x10 records are preserved in levels.txt.
+Puzzle IDs refer to the source's zero-based semicolon headers.
+
+Adaptations in src/games/sokoban-levels.ts:
+In-game level | Source ID | Crop bounds (x0,y0)-(x1,y1), inclusive | Transpose
+1             | 6         | (0,1)-(7,9)                            | yes
+2             | 47        | (0,0)-(6,9)                            | yes
+3             | 7         | (0,0)-(9,7)                            | no
+4             | 27        | (0,3)-(9,9)                            | no
+5             | 17        | (0,0)-(9,5)                            | no
+
+Only solid-wall margins were removed and two boards were transposed to fit
+the existing 24px tiles in a 268x192 canvas. No playable cell, box, goal,
+or player position was added or removed. The level array format was changed
+from XSB text to TypeScript. Source IDs and source records are retained here.
+
+Independent breadth-first push search confirms minimum push counts of
+27, 20, 21, 20, and 19 respectively. The corresponding verified solutions
+use 73, 75, 70, 71, and 73 walking inputs; these are not minimum move counts.
+
+Upstream requested citation:
+@misc{boxobanlevels,
+  author = {Arthur Guez and Mehdi Mirza and Karol Gregor and Rishabh Kabra and
+            Sebastien Racaniere and Theophane Weber and David Raposo and
+            Adam Santoro and Laurent Orseau and Tom Eccles and Greg Wayne and
+            David Silver and Timothy Lillicrap and Victor Valdes},
+  title = {An investigation of Model-free planning: boxoban levels},
+  howpublished = {https://github.com/deepmind/boxoban-levels/},
+  year = {2018}
+}

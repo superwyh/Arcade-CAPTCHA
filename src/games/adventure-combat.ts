@@ -2,8 +2,7 @@ export type Direction = 'up' | 'down' | 'left' | 'right';
 export const ATTACK_DURATION = .26, ATTACK_COOLDOWN = .38;
 const WINDUP = .06, EXTENSION_END = .18;
 
-// Pixel bounds of the blade in the generated 32 × 32 extension frames.
-// Coordinates are relative to the same body center used to render the hero.
+// Blade bounds in 32 × 32 frames, relative to the character's center.
 export const swordPixels: Record<Direction, readonly [number, number, number, number]> = {
   down: [-6, 5, -3, 14], up: [-6, -13, -3, -5],
   left: [-15, 4, -5, 7], right: [5, 4, 16, 7],
@@ -19,8 +18,7 @@ export function swordTouches(direction: Direction, dx: number, dy: number, radiu
     && dy + radius >= top / 16 && dy - radius <= bottom / 16;
 }
 
-// A forgiving forward sweep for enemies. The narrow pixel blade is still used
-// for projectile interception; hitting a moving enemy should not require pixel-perfect aim.
+// Enemies use a wider sweep; projectile interception uses swordTouches.
 export function attackTouches(direction: Direction, dx: number, dy: number, radius: number) {
   const forward = direction === 'right' ? dx : direction === 'left' ? -dx : direction === 'down' ? dy : -dy;
   const side = direction === 'left' || direction === 'right' ? dy : dx;

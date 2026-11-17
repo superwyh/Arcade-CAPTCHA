@@ -6,5 +6,5 @@
     "noEmit": true, "skipLibCheck": true, "esModuleInterop": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "demo", "tests", "vite*.ts"]
+  "include": ["src", "demo", "tests", "vite*.ts", "playwright.config.ts"]
 }

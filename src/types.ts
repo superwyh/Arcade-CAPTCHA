@@ -1,6 +1,6 @@
-export type BuiltinGameId = 'tetris' | '2048' | 'minesweeper' | 'breakout' | 'fps' | 'adventure' | 'racing';
+export type BuiltinGameId = 'tetris' | '2048' | 'minesweeper' | 'breakout' | 'fps' | 'adventure' | 'racing' | 'snake' | 'space' | 'pacman' | 'sokoban' | 'bubbles';
 export type CaptchaState = 'idle' | 'running' | 'paused' | 'passed' | 'failed';
-export type GameAction = 'left' | 'right' | 'down' | 'up' | 'rotate' | 'drop' | 'flag' | 'reveal' | 'fire' | 'strafe-left' | 'strafe-right' | 'attack' | 'brake' | 'boost';
+export type GameAction = 'left' | 'right' | 'down' | 'up' | 'rotate' | 'drop' | 'flag' | 'reveal' | 'fire' | 'strafe-left' | 'strafe-right' | 'attack' | 'brake' | 'boost' | 'undo';
 export interface GameControl { action: GameAction; label: string; symbol: string }
 export interface GameContext {
   /** Resolved target for this session, including per-game overrides. */

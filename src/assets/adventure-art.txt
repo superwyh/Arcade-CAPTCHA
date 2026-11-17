@@ -1,55 +1,22 @@
-Adventure artwork — current sprites
-Generated with the built-in imagegen tool on 2026-11-11.
-Original generated game artwork, distributed with this project's MIT license.
-Two local atlases are used by the canvas renderer, without an external image service.
+Adventure assets
+License: MIT (see ../../LICENSE).
+Source: imagegen, 2026-11-11.
 
-adventure-hero.png — four facing directions × four frames (idle, step, wind-up, extension).
-Use case: stylized-concept.
-Asset type: pixel-art animation sprite sheet used directly in a tiny top-down dungeon game, early NES Legend of Zelda style with an original adventurer.
-Create a transparent 1024x1024 PNG, a STRICT uniform 4 columns by 4 rows grid, each cell exactly 256x256, no gutter, no grid, no text. All sixteen cells contain the SAME small green-clad brown-haired adventurer, drawn in authentic simple 8-bit chunky pixel art, NOT detailed chibi illustration. Sprite art is based on a 32x32 logical pixel grid per cell, enlarged exactly 8x. Flat colors, only dark navy outlines, leaf green, dark green, skin peach, brown boots, ivory silver blade, ochre shield. One logical pixel = large solid 8px square, no finer detail, no antialiasing, no gradients.
-The character's BODY CENTER must stay EXACTLY at the center of EVERY cell, logical coordinate (16,16), identical scale and alignment in all frames. Body approximately 14 pixels wide and 18 pixels tall (x9..22 y7..24), short square head, short tunic, compact legs, left hand holds a small brown shield, right hand wields a sword. Small original green hood/cap with brown hair visible. Top-down game view, not isometric.
-ROW 1: faces DOWN, visible face.
-ROW 2: faces UP, back of head visible, NO face.
-ROW 3: faces LEFT, left profile.
-ROW 4: faces RIGHT, right profile.
-In EACH row, the four COLUMNS are:
-Column 1: neutral standing pose, sword hand tucked near body, NO exposed extended sword.
-Column 2: walking alternate step, legs and arms change, sword still tucked.
-Column 3: sword attack preparation, torso braced, right sword hand pulled back near body, short blade visible, correct facing.
-Column 4: fully extended sword thrust STRAIGHT along that row's facing direction (DOWN in row1, UP row2, LEFT row3, RIGHT row4). Arm AND blade form one connected silhouette, blade physically touches the hand and hilt, body leaning slightly but BODY CENTER unchanged. Blade extends to logical coordinate 31 for DOWN/RIGHT or 1 for UP/LEFT. Single straight chunky ivory/silver sword, brown hilt, no circular slash trail, no floating sword, no second sword.
-Readability at native 32x32 pixels matters more than detail. All pixels outside sprites are truly transparent. Each sprite and sword fit entirely inside its own cell with no overlap into neighboring cells. No scenery, shadows, labels, borders, logos, watermark. The completed deliverable IS the production sprite sheet, not a preview scene.
+adventure-hero.png
+- Source image: 1254 x 1254, 4 columns x 4 rows.
+- Runtime atlas: 128 x 128, 32 x 32 pixels per frame.
+- Rows: down, up, left, right.
+- Columns: idle, walking step, wind-up, sword extension.
+- Frame origin: character center at (16, 16).
+- Walking reuses the idle torso and changes only the bottom eight pixels.
 
-adventure-dungeon.png — enemies, dungeon tiles and items.
-Use case: stylized-concept.
-Asset type: production sprite atlas for a small top-down 8-bit dungeon adventure reminiscent of the FIRST NES Zelda's blue dungeon rooms. Original generic monsters and objects.
-Create ONE transparent 1024x1024 PNG: EXACT uniform 4 columns x 4 rows, each cell256x256. No gutters, grid, margins outside cells, text, watermark or scene. Each cell a 32x32 logical pixel sprite enlarged8x nearest-neighbor. Real coarse, SIMPLE NES pixel shapes, crisp blocks and a limited flat palette, DARK NAVY #14213d outlines. NO glossy detailed illustration, no gradients, no realistic masonry, no moss, no tiny noisy pixels.
-Rows in reading order:
-Row1: a single wall-mounted golden burning torch (transparent background); a squat blue square carved stone dungeon pillar viewed from slightly above, top-down game perspective (transparent); a blue stone pot (transparent); a small four-point ivory hit sparkle (transparent).
-Row2: green blob slime with two ivory eyes; purple bat with open angular wings; an ivory skeleton swordsman with an ochre shield; a large horned blue stone guardian with amber eyes. All transparent, chunky square silhouettes, only 3-4 colors each. Monsters centered, body centers at center of cell, small monsters about20x20 logical pixels, boss26x26.
-Row3: closed ochre wooden chest with dark outline and yellow latch; the SAME chest opened with pale yellow inside; one simple golden dungeon key; one red heart. Transparent, centered, approximately20x20 logical pixels.
-Row4:
-cell1 FLOOR: fully opaque edge-to-edge subdued dusty pale blue #6b83a9 square, mostly flat with only FOUR small 2x2 pixel darker marks distributed sparsely, no tile outline, no cracks, no stones, no clutter. This is a repeating walkable floor that should remain visually quiet.
-cell2 WALL: fully opaque edge-to-edge cobalt and navy block-pattern dungeon wall, big clean horizontal rectangular bricks with dark joints, only3 blue colors. Chunky geometric, not realistic texture. Contrasts strongly with pale blue floor.
-cell3 DOOR: centered heavy closed navy-blue doorway with a bright blue stone frame and three vertical silver bars, transparent surrounding outside doorway, fills about24x28 logical pixels, symmetrical.
-cell4 STAIRS: a simple square navy hole with four light blue horizontal descending steps and a blue edge, transparent surrounding, about24x24 logical pixels.
-All sprites kept wholly inside their cells. Top-down NES video game perspective. Keep the floor sparse, enemies readable and palette consistent. Assets themselves only, not a mockup.
+adventure-dungeon.png
+- Source image: 1254 x 1254, 4 columns x 4 rows.
+- Runtime atlas: 128 x 128, 32 x 32 pixels per cell.
+- Row 1: torch, pillar, pot, hit spark.
+- Row 2: slime, bat, skeleton, guardian.
+- Row 3: closed chest, open chest, key, heart.
+- Row 4: floor, wall, door, stairs.
+- Floor and wall cells are opaque; other cells have transparent backgrounds.
 
-Final transparency correction prompt:
-Edit this sprite atlas only to make it usable in a game. Preserve EXACT canvas dimensions and the exact 4x4 cell layout, every subject, every subject position, size, silhouette, palette and pose. Remove ALL white/off-white backgrounds, grid lines and cast shadows around the isolated objects and replace them with REAL alpha transparency. The two fully filled terrain tiles at row4 columns1 and2 must remain opaque; all other pixels outside the 14 individual sprites must be transparent. Make colors flat, remove subtle lighting gradients; keep crisp square pixel edges. Do NOT rearrange, enlarge, recenter or alter the sprites. Do not add anything. Output just the corrected transparent PNG atlas.
-
-Historical artwork (adventure-atlas.png, no longer loaded):
-
-Adventure sprite atlas
-Generated with the built-in imagegen tool on 2026-11-10.
-Original generated game artwork, distributed with this project's MIT license.
-The atlas is used directly by the canvas renderer; no external image service is needed at runtime.
-
-Final generation prompt:
-Use case: stylized-concept. Asset type: a production-ready pixel-art sprite atlas for a tiny top-down dungeon adventure game, inspired by the craft of late 1980s / early 1990s console action adventures. ORIGINAL characters, no existing game characters, logos or text.
-Create ONE square 1024x1024 transparent PNG with EXACTLY a uniform 4-column by 4-row grid of 256x256 cells. No outer margin, no grid lines, no cell borders, no labels. Each cell contains only its specified asset. Crisp large square pixels, restrained 16-bit palette, strong silhouettes and dark pixel outlines, no smooth gradients, no antialiasing, no glossy vector art. Assets should look as if drawn on a 32x32 pixel grid and enlarged 8x nearest neighbor.
-Rows and columns in reading order:
-Row 1: SAME small auburn-haired explorer with blue-teal tunic, ochre scarf, brown boots, tiny steel sword and round wooden shield, no hat. Four idle walking directions: front facing DOWN, back facing UP, profile facing LEFT, profile facing RIGHT. Feet at same baseline, each character centered in cell, about 176px tall with generous transparent margin. Top-down three-quarter game camera, NOT isometric.
-Row 2: green slime monster; purple bat with spread wings; ivory skeleton swordsman with rusty round shield; a large blue-gray stone guardian with amber glowing eyes (boss). Separate centered game sprites with transparent margins; guardian about 224px tall.
-Row 3: closed small wooden treasure chest with gold metal bands; the SAME chest opened showing golden contents; a single chunky gold dungeon key; a single red pixel heart. Center every asset within its own cell with ample transparent margin.
-Row 4: a seamless overhead aged sandstone FLOOR tile (fill entire 256x256 cell with gray-brown flagstones, muted, subtly mossy, low contrast); a dungeon WALL tile (fill entire cell, chunky weathered gray-green masonry with beveled stone and dark lower edge); a closed vertical iron-bound wooden dungeon door centered in its cell with transparent margin; a square recessed dark staircase descending into the dungeon centered with transparent margin.
-Characters, creatures and items must be isolated on real transparent background. Only the two terrain tile cells are fully opaque. Coherent warm earthy dungeon palette with teal, amber, moss green and muted purple accents. No scenery outside tiles. Keep every sprite within its cell. Deliver the sprite atlas itself, not a mockup or screenshot.
+adventure-atlas.png is an unused earlier atlas (imagegen, 2026-11-10).

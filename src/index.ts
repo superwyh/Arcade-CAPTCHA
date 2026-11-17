@@ -7,6 +7,11 @@ import { breakoutGame } from './games/breakout';
 import { fpsGame } from './games/fps';
 import { adventureGame } from './games/adventure';
 import { racingGame } from './games/racing';
+import { snakeGame } from './games/snake';
+import { spaceGame } from './games/space';
+import { pacmanGame } from './games/pacman';
+import { sokobanGame } from './games/sokoban';
+import { bubblesGame } from './games/bubbles';
 
 registerGame(tetrisGame);
 registerGame(mergeGame);
@@ -15,9 +20,11 @@ registerGame(breakoutGame);
 registerGame(fpsGame);
 registerGame(adventureGame);
 registerGame(racingGame);
+registerGame(snakeGame);
+registerGame(spaceGame);
+registerGame(pacmanGame);
+registerGame(sokobanGame);
+registerGame(bubblesGame);
 
-export { GameCaptcha, createCaptcha, getGames, registerGame } from './core';
-export { createTranslator, resolveLocale, locales } from './i18n';
-export type { Locale, LocaleOption, Translator } from './i18n';
-export { tetrisGame, mergeGame, minesweeperGame, breakoutGame, fpsGame, adventureGame, racingGame };
-export type * from './types';
+export * from './api';
+export { tetrisGame, mergeGame, minesweeperGame, breakoutGame, fpsGame, adventureGame, racingGame, snakeGame, spaceGame, pacmanGame, sokobanGame, bubblesGame };

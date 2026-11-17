@@ -32,7 +32,7 @@ export function createSector(index: number, random: () => number = Math.random):
     visited.add(to); edges.push([from, to]);
     for (const neighbor of neighbors(to)) if (!visited.has(neighbor)) frontier.push([to, neighbor]);
   }
-  // Alternate routes avoid forcing every encounter into a dead end.
+  // Add cycles to the spanning tree.
   for (const id of visited) for (const next of neighbors(id)) {
     if (next <= id || !visited.has(next) || edges.some(([a, b]) => a === id && b === next || a === next && b === id)) continue;
     if (random() < .35) edges.push([id, next]);
@@ -51,7 +51,7 @@ export function createSector(index: number, random: () => number = Math.random):
       for (let y = Math.min(from.y, to.y); y <= Math.max(from.y, to.y); y++) { tiles[y][x] = '.'; tiles[y][x + 1] = '.'; }
     }
   }
-  // Borders and inset wall panels are decorative; floor connectivity stays intact.
+  // Change wall textures without altering floor connectivity.
   for (let y = 1; y < MAP_SIZE - 1; y++) for (let x = 1; x < MAP_SIZE - 1; x++) {
     if (tiles[y][x] !== '.' && (tiles[y][x - 1] === '.' || tiles[y - 1][x] === '.') && (x + y) % 5 === 0) tiles[y][x] = String((index + 1) % 3 + 1);
   }

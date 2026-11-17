@@ -1,4 +1,4 @@
-import atlasUrl from '../assets/racing-atlas.png';
+import atlasUrl from '../assets/runtime/racing-atlas.png';
 import { RacingModel } from './racing-model';
 
 export class RacingRenderer {
