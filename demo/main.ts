@@ -38,7 +38,14 @@ const gameChoices = gameShelf.map((id, index) => {
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main>
-    <header class="site-header"><h1><img src="${wordmark}" alt="Arcade CAPTCHA" width="616" height="49"></h1><nav><button type="button" id="login-demo-toggle" aria-pressed="false" aria-controls="login-preview">${t('loginDemo')}</button><a href="#integration">${t('code')}</a></nav></header>
+    <header class="site-header">
+      <h1><img src="${wordmark}" alt="Arcade CAPTCHA" width="616" height="49"></h1>
+      <nav>
+        <button type="button" id="login-demo-toggle" aria-pressed="false" aria-controls="login-preview">${t('loginDemo')}</button>
+        <a href="#integration">${t('code')}</a>
+        <a href="https://superwyh.com/" target="_blank" rel="noopener">superwyh.com</a>
+      </nav>
+    </header>
     <div class="workspace">
       <section class="demo" aria-label="${t('demo')}">
         <div class="preview">

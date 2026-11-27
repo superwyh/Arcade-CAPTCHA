@@ -33,17 +33,17 @@ a { color: inherit; text-underline-offset: 4px; }
 .site-header h1 { margin: 0; line-height: 0; }
 .site-header h1 img { display: block; width: clamp(190px, 39vw, 506px); height: auto; max-width: 100%; }
 .site-header nav, .site-header nav > * { display: flex; align-items: center; }
-.site-header nav { gap: 14px; }
+.site-header nav { flex-wrap: wrap; gap: 0 14px; }
 .site-header nav > * {
   gap: 8px; min-height: 34px; padding: 2px 0;
   border: 0; background: transparent; text-decoration: none; line-height: 1.15;
 }
 .site-header nav > :last-child { padding-left: 14px; border-left: 1px solid var(--rule); }
 .site-header nav > :hover { text-decoration: underline; text-underline-offset: 4px; }
-.site-header a::before, #copy-code::before, .game-icon {
+.site-header a[href="#integration"]::before, #copy-code::before, .game-icon {
   content: ""; flex: none; background: currentColor;
 }
-.site-header a::before { width: 19px; height: 16px; mask: url("./assets/code.png") center / contain no-repeat; }
+.site-header a[href="#integration"]::before { width: 19px; height: 16px; mask: url("./assets/code.png") center / contain no-repeat; }
 #login-demo-toggle::before, #random-toggle::before {
   content: ""; box-sizing: border-box; flex: none;
   width: 29px; height: 16px; background: currentColor;
@@ -157,8 +157,8 @@ a { color: inherit; text-underline-offset: 4px; }
 @media (max-width: 620px) {
   :root { --gutter: 14px; font-size: 14px; }
   .site-header { flex-wrap: wrap; padding: 16px 0 8px; }
-  .site-header nav { gap: 9px; }
-  .site-header nav > :last-child { padding-left: 9px; }
+  .site-header nav { gap: 0 9px; }
+  .site-header nav > :last-child { padding-left: 0; border-left: 0; }
   .game-options { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding-bottom: 9px; }
   .game-options button { padding: 5px; gap: 5px; min-height: 40px; }
   .game-icon { width: 19px; height: 19px; }
