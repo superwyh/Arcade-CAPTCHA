@@ -1,7 +1,7 @@
 .login-demo { width: 100%; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #1a1a1a; color-scheme: light; }
 body:has(#verification-dialog[open]) { overflow: hidden; }
 .login-demo .auth-layout { display: grid; place-items: center; padding: 0; }
-.login-demo .auth-card { width: 100%; max-width: 380px; padding: 28px 24px; background: #fff; border: 1px solid #e5e5e5; border-radius: 16px; box-shadow: 0 12px 40px #00000006; }
+.login-demo .auth-card { width: 100%; max-width: 346px; padding: 12px 10px; }
 .login-demo .auth-card h2 { margin: 0 0 30px; font-size: 26px; line-height: 1.3; font-weight: 600; letter-spacing: -.5px; }
 .login-demo #login-form { display: grid; gap: 8px; }
 .login-demo #login-form label { font-size: 13px; font-weight: 500; }
@@ -16,17 +16,28 @@ body:has(#verification-dialog[open]) { overflow: hidden; }
 .login-demo .primary-button:hover:not(:disabled) { background: #333; }
 .login-demo .primary-button:disabled { opacity: .5; cursor: default; }
 .login-demo .primary-button:focus-visible, .login-demo #toggle-password:focus-visible, .login-demo .close-button:focus-visible { outline: 2px solid #777; outline-offset: 3px; }
-.login-demo .verification-dialog { width: 338px; max-width: calc(100% - 24px); max-height: calc(100svh - 32px); margin: auto; padding: 16px; overflow: auto; border: 1px solid #ddd; border-radius: 12px; background: #fff; color: #171717; box-shadow: 0 24px 80px #0004; }
-.login-demo .verification-dialog::backdrop { background: #15151566; backdrop-filter: blur(4px); }
-.login-demo .dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.login-demo .dialog-heading h2 { margin: 0; font-size: 14px; font-weight: 500; }
-.login-demo .close-button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; flex: 0 0 32px; border: 0; border-radius: 5px; background: transparent; color: #737373; font: 24px/1 sans-serif; cursor: pointer; }
+.login-demo .verification-dialog {
+  width: 316px; max-width: calc(100% - 8px); max-height: calc(100dvh - 12px);
+  margin: auto; padding: 6px; border: 0; overflow: auto;
+  background: transparent; color: #171716;
+}
+.login-demo .verification-dialog::backdrop { background: #141417bd; backdrop-filter: blur(2px); }
+.verification-dialog .pg-game-heading { padding-right: 30px; padding-bottom: 6px; border-bottom: 1px solid #c5c5be; }
+.verification-dialog .pg-title::before {
+  content: ""; display: inline-block; width: 14px; height: 10px; margin-right: 5px;
+  background: url("./assets/verify.png") center / contain no-repeat;
+}
+.login-demo .close-button {
+  position: absolute; top: 16px; right: 17px; display: grid; place-items: center;
+  width: 26px; height: 26px; padding: 0; border: 0; border-radius: 1px;
+  background: transparent; color: #272723; font: 22px/1 sans-serif; cursor: pointer;
+}
 .login-demo .close-button:hover { color: #171717; background: #f0f0f0; }
 .login-demo .account-card { text-align: center; }
 .login-demo .account-card h2 { margin: 20px 0 10px; }
 .login-demo .account-card p { margin: 0; color: #6b6b6b; overflow-wrap: anywhere; }
 .login-demo .success-mark { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: #edf6ed; color: #32743d; font-size: 24px; }
 @media (max-width: 460px) {
-.login-demo .auth-card { padding: 30px 24px 26px; }
+.login-demo .auth-card { padding: 12px 10px; }
 .login-demo #login-form input { font-size: 16px; }
 }

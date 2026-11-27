@@ -5,6 +5,7 @@ import xml from 'highlight.js/lib/languages/xml';
 import './style.css';
 import { integrationPrompt } from './integration-prompt';
 import { mountLoginDemo } from './login';
+import wordmark from './assets/wordmark.png';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('xml', xml);
@@ -25,9 +26,19 @@ let verified: VerificationResult | undefined;
 let loginMode = false;
 let disposeLogin: (() => void) | undefined;
 
+// Icon positions follow the two rows of the game sprite sheet.
+const gameShelf = ['tetris', 'fps', 'adventure', 'racing', 'space', '2048', 'minesweeper', 'breakout', 'snake', 'pacman', 'sokoban', 'bubbles'];
+const gameChoices = gameShelf.map((id, index) => {
+  const game = games.find(item => item.id === id)!;
+  const position = `${(index % 6) * 20}% ${Math.floor(index / 6) * 100}%`;
+  return `<button type="button" data-game="${id}" aria-pressed="${id === selected}">
+    <span class="game-icon" aria-hidden="true" style="--sprite-position:${position}"></span><span>${game.name}</span>
+  </button>`;
+}).join('');
+
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main>
-    <header class="site-header"><h1>Arcade CAPTCHA</h1><nav><button type="button" id="login-demo-toggle" aria-pressed="false" aria-controls="login-preview">${t('loginDemo')}</button><a href="#integration">${t('code')}</a></nav></header>
+    <header class="site-header"><h1><img src="${wordmark}" alt="Arcade CAPTCHA" width="616" height="49"></h1><nav><button type="button" id="login-demo-toggle" aria-pressed="false" aria-controls="login-preview">${t('loginDemo')}</button><a href="#integration">${t('code')}</a></nav></header>
     <div class="workspace">
       <section class="demo" aria-label="${t('demo')}">
         <div class="preview">
@@ -40,18 +51,18 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
           </div>
         </div>
         <div class="configuration">
-        <div class="game-options" role="group" aria-label="${t('game')}">${games.map(game => `<button type="button" data-game="${game.id}" aria-label="${game.name}" aria-pressed="${game.id === selected}">${game.id === 'minesweeper' ? t('minesButton') : game.id === 'breakout' ? t('breakoutButton') : game.name}</button>`).join('')}</div>
+        <div class="game-options" role="group" aria-label="${t('game')}">${gameChoices}</div>
         <form id="settings" class="settings">
           <label class="target-field">${t('target')}<input id="target-input" type="number" value="${targets[selected]}" min="1" max="${games.find(game => game.id === selected)!.maxTarget}" aria-describedby="target-error" /></label>
           <button type="button" id="random-toggle" aria-pressed="false">${t('random')}</button>
-          <button type="button" id="restore" title="${t('restore')}" aria-label="${t('restore')}"><svg viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M3 1h5v1h2v2h1V2h1v5H7V6h3V4H8V3H3v1H2v4h1v1h5V8h2v2H8v1H3v-1H1V8H0V4h1V2h2z"/></svg></button>
+          <button type="button" id="restore" title="${t('restore')}"><svg viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M3 1h5v1h2v2h1V2h1v5H7V6h3V4H8V3H3v1H2v4h1v1h5V8h2v2H8v1H3v-1H1V8H0V4h1V2h2z"/></svg>${t('restore')}</button>
         </form>
         <p id="target-error" role="alert" hidden></p>
         </div>
       </section>
       <section id="integration" class="integration" aria-label="${t('code')}">
         <div class="code-toolbar"><div role="tablist" aria-label="${t('code')}"><button type="button" role="tab" id="tab-js" aria-selected="true" aria-controls="code-panel" data-tab="js">JavaScript</button><button type="button" role="tab" id="tab-html" aria-selected="false" aria-controls="code-panel" data-tab="html" tabindex="-1">HTML</button><button type="button" role="tab" id="tab-prompt" aria-selected="false" aria-controls="code-panel" data-tab="prompt" tabindex="-1">${t('aiPrompt')}</button></div><button type="button" id="copy-code">${t('copy')}</button></div>
-        <pre id="code-panel" role="tabpanel" aria-labelledby="tab-js" tabindex="0"><code id="code-sample"></code></pre>
+        <pre id="code-panel" role="tabpanel" aria-labelledby="tab-js" tabindex="0"><span class="line-numbers" aria-hidden="true"></span><code id="code-sample"></code></pre>
         <details class="api"><summary>${t('api')}</summary>
           <table><tbody><tr><th scope="row"><code>game</code></th><td>${t('gameOption')}</td></tr><tr><th scope="row"><code>targetScore</code></th><td>${t('targetOption')}</td></tr><tr><th scope="row"><code>locale</code></th><td>${t('localeOption')}</td></tr><tr><th scope="row"><code>onVerify</code></th><td>${t('verifyOption')}</td></tr><tr><th scope="row"><code>onStateChange</code></th><td>${t('stateOption')}</td></tr><tr><th scope="row"><code>destroy()</code></th><td>${t('destroyOption')}</td></tr></tbody></table>
           <p>${t('defaults')}</p>
@@ -93,16 +104,18 @@ function codeSample() {
 
 function renderCode() {
   const node = document.querySelector('#code-sample')!;
+  const sample = codeSample();
+  document.querySelector('.line-numbers')!.textContent = codeTab === 'prompt' ? '' : sample.split('\n').map((_, i) => i + 1).join('\n');
   document.querySelector('#code-panel')!.classList.toggle('is-prompt', codeTab === 'prompt');
   document.querySelector('#copy-code')!.textContent = t('copy');
   if (codeTab === 'prompt') {
     node.className = '';
-    node.textContent = codeSample();
+    node.textContent = sample;
     return;
   }
   const language = codeTab === 'js' ? 'javascript' : 'xml';
   node.className = `hljs language-${language}`;
-  node.innerHTML = hljs.highlight(codeSample(), {
+  node.innerHTML = hljs.highlight(sample, {
     language,
     ignoreIllegals: true,
   }).value;

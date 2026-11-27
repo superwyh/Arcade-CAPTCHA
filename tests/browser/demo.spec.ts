@@ -97,7 +97,13 @@ for (const locale of ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'fr', 'de', 'es', 'pt'
     await expect(page.locator('#login-title')).not.toBeEmpty();
     for (const selector of ['#login-preview', '#login-form', '#login-demo-toggle']) await fitsViewport(page, selector);
     await page.locator('#login-button').click();
-    await expect(page.locator('#login-captcha .pg-widget')).toHaveAttribute('data-state', 'running');
+    const modalGame = page.locator('#login-captcha .pg-widget');
+    await expect(modalGame).toHaveAttribute('data-state', 'running');
+    await expect(modalGame.locator('.pg-title')).toHaveText(await page.locator('#verification-title').textContent() ?? '');
+    const restartBox = await modalGame.locator('.pg-restart').boundingBox();
+    const closeBox = await page.locator('#close-dialog').boundingBox();
+    expect(restartBox!.x + restartBox!.width).toBeLessThanOrEqual(closeBox!.x);
+    expect(Math.abs(restartBox!.y - closeBox!.y)).toBeLessThan(restartBox!.height);
     await fitsViewport(page, '#verification-dialog');
     await page.locator('#close-dialog').click();
   });

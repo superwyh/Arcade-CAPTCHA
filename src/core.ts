@@ -160,7 +160,7 @@ export class ArcadeCaptcha {
     this.state = 'idle'; this.score = 0; this.duration = 0;
     this.root.setAttribute('aria-description', this.definition.instructions);
     this.root.innerHTML = `
-      <div class="pg-game-heading"><span class="pg-score"><b>0</b><span></span></span><button class="pg-restart pg-icon-button" type="button"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><path fill="currentColor" d="M3 1h5v1h2v2h1V2h1v5H7V6h3V4H8V3H3v1H2v4h1v1h5V8h2v2H8v1H3v-1H1V8H0V4h1V2h2z"/></svg></button></div>
+      <div class="pg-game-heading"><span class="pg-title">${this.t('widget')}</span><span class="pg-score"><b>0</b><span></span></span><button class="pg-restart pg-icon-button" type="button"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><path fill="currentColor" d="M3 1h5v1h2v2h1V2h1v5H7V6h3V4H8V3H3v1H2v4h1v1h5V8h2v2H8v1H3v-1H1V8H0V4h1V2h2z"/></svg></button></div>
       <div class="pg-progress pg-sr-only" role="progressbar" aria-valuemin="0"><i></i></div>
       <div class="pg-stage"><div class="pg-surface"></div><div class="pg-overlay"></div></div>
       <div class="pg-controls"></div>
